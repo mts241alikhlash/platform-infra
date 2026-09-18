@@ -29,7 +29,7 @@ x-migrate-defaults: &migrate-defaults
 
 services:
   gateway:
-    image: ghcr.io/mts241alikhlash/platform-gateway@sha256:816850eee90bba2e0a9d1cf5a5162488eee89930304fb6181a0f0224c5013777
+    image: ghcr.io/mts241alikhlash/platform-gateway@sha256:9a0c01d43d0b6da84d3bfd0e572a1b250f5856f87603b6e9a7087967b4d3afe7
     restart: unless-stopped
     ports:
       - "80:80"
