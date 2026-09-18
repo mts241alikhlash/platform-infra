@@ -20,6 +20,13 @@ x-service-defaults: &service-defaults
   networks:
     - platform-net
 
+x-migrate-defaults: &migrate-defaults
+  restart: "no"
+  entrypoint: ["./node_modules/.bin/prisma"]
+  command: ["migrate", "deploy"]
+  networks:
+    - platform-net
+
 services:
   gateway:
     image: ghcr.io/mts241alikhlash/platform-gateway@sha256:REPLACE_BEFORE_DEPLOYMENT
@@ -94,6 +101,9 @@ services:
   identity-service:
     <<: *service-defaults
     image: ghcr.io/mts241alikhlash/identity-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    env_file:
+      - path: env/identity-service.env
+        required: false
     expose:
       - "3000"
     healthcheck:
@@ -106,6 +116,9 @@ services:
   academic-service:
     <<: *service-defaults
     image: ghcr.io/mts241alikhlash/academic-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    env_file:
+      - path: env/academic-service.env
+        required: false
     expose:
       - "3200"
     healthcheck:
@@ -118,6 +131,9 @@ services:
   inventory-service:
     <<: *service-defaults
     image: ghcr.io/mts241alikhlash/inventory-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    env_file:
+      - path: env/inventory-service.env
+        required: false
     expose:
       - "3300"
     healthcheck:
@@ -130,6 +146,9 @@ services:
   presence-service:
     <<: *service-defaults
     image: ghcr.io/mts241alikhlash/presence-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    env_file:
+      - path: env/presence-service.env
+        required: false
     expose:
       - "3400"
     healthcheck:
@@ -142,6 +161,9 @@ services:
   portal-service:
     <<: *service-defaults
     image: ghcr.io/mts241alikhlash/portal-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    env_file:
+      - path: env/portal-service.env
+        required: false
     expose:
       - "3600"
     healthcheck:
@@ -154,6 +176,9 @@ services:
   admission-service:
     <<: *service-defaults
     image: ghcr.io/mts241alikhlash/admission-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    env_file:
+      - path: env/admission-service.env
+        required: false
     expose:
       - "3700"
     healthcheck:
@@ -166,6 +191,9 @@ services:
   hr-service:
     <<: *service-defaults
     image: ghcr.io/mts241alikhlash/hr-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    env_file:
+      - path: env/hr-service.env
+        required: false
     expose:
       - "3800"
     healthcheck:
@@ -178,6 +206,9 @@ services:
   student-service:
     <<: *service-defaults
     image: ghcr.io/mts241alikhlash/student-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    env_file:
+      - path: env/student-service.env
+        required: false
     expose:
       - "3900"
     healthcheck:
@@ -190,6 +221,9 @@ services:
   assessment-service:
     <<: *service-defaults
     image: ghcr.io/mts241alikhlash/assessment-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    env_file:
+      - path: env/assessment-service.env
+        required: false
     expose:
       - "4000"
     healthcheck:
@@ -198,6 +232,78 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+
+  identity-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    profiles: ["migrate"]
+    env_file:
+      - path: env/identity-service.env
+        required: false
+
+  academic-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/academic-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    profiles: ["migrate"]
+    env_file:
+      - path: env/academic-service.env
+        required: false
+
+  inventory-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/inventory-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    profiles: ["migrate"]
+    env_file:
+      - path: env/inventory-service.env
+        required: false
+
+  presence-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/presence-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    profiles: ["migrate"]
+    env_file:
+      - path: env/presence-service.env
+        required: false
+
+  portal-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/portal-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    profiles: ["migrate"]
+    env_file:
+      - path: env/portal-service.env
+        required: false
+
+  admission-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/admission-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    profiles: ["migrate"]
+    env_file:
+      - path: env/admission-service.env
+        required: false
+
+  hr-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/hr-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    profiles: ["migrate"]
+    env_file:
+      - path: env/hr-service.env
+        required: false
+
+  student-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/student-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    profiles: ["migrate"]
+    env_file:
+      - path: env/student-service.env
+        required: false
+
+  assessment-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/assessment-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    profiles: ["migrate"]
+    env_file:
+      - path: env/assessment-service.env
+        required: false
 
 networks:
   platform-net:

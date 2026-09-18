@@ -481,21 +481,31 @@ a service with no upstream declared.
 **All nine services are dockerized as of 2026-09-10**, each with a
 `Dockerfile` and a `.dockerignore` beside it. Until then only five had one —
 identity, academic, admission, hr and student — so the platform ran five
-services in Docker and four somewhere else, and `docker-compose.prod.yml`
+services in Docker and four somewhere else, and `docker-compose.production.yml`
 listed only the five. inventory, presence, portal and assessment were added
 from the same template; portal's runner also copies `./public`, which
 `ServeStaticModule` resolves from the working directory.
 
-Each `Dockerfile` has a fourth stage, `migrator`, built on `builder`: it is the
-only stage holding the schema folder, `prisma.config.ts` and a full install all
-at once. `start:prod` migrates in none of the nine — `inventory-service` was
-the last one still doing it on boot, which races every extra replica and takes
-the timing of a schema change away from whoever is deploying.
+Each `Dockerfile` has two stages, `build` and `runner`. There is no separate
+`migrator` stage: `pnpm --filter <service> deploy --prod --legacy /out`
+already copies the service's full source — schema folder and
+`prisma.config.ts` included, since neither is excluded by `.gitignore` and
+no `package.json` `files` field narrows what `deploy` packs — so the
+`runner` image already holds everything `prisma migrate deploy` needs.
+Migration runs against that same image, via a `--profile migrate` sibling
+service per backend service in `compose/docker-compose.production.yml` /
+`.staging.yml`, overriding the entrypoint to call the `prisma` binary
+directly instead of booting the app. `start:prod` migrates in none of the
+nine — `inventory-service` was the last one still doing it on boot, which
+races every extra replica and takes the timing of a schema change away from
+whoever is deploying.
 
-**The build context matters.** The builder
-stage runs `pnpm install` and then `COPY . .`, so without one the host's
-`node_modules` — resolved on Windows — landed on top of the Linux tree pnpm had
-just installed, and `.env` was baked into an image layer.
+**The build context matters.** The `build` stage copies only
+`package.json`/`pnpm-lock.yaml`/`pnpm-workspace.yaml`, then `services/` and
+`packages/`, explicitly — never a blanket `COPY . .`. A `COPY . .` would pull
+in whatever `node_modules` the host already resolved (Windows-built, wrong
+platform) on top of the Linux tree pnpm had just installed, and would bake
+`.env` into an image layer; naming each path avoids both.
 
 `.env` staying out has a consequence worth knowing: `prisma.config.ts` throws
 unless `DIRECT_URL` or `DATABASE_URL` is set, so the build used to depend on a
@@ -569,20 +579,14 @@ Postgres or Docker installed on the machine this was set up on, so the first
 step is real.
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d
-#   postgres  :5433  — 9 databases, created by infra/postgres/init-databases.sql
-#   minio     :9000  — object storage, console on :9001, bucket 241-apps
+docker compose -f compose/docker-compose.dev.yml up -d
+#   postgres  :5433 — 9 databases, created by gateway-source/postgres/init-databases.sql
 ```
 
-**Or against shared infrastructure**, when Postgres and MinIO already run
-elsewhere on a network this can join — `docker-compose.dev-shared.yml` brings
-up the nine services and nothing else:
-
-```bash
-docker compose -f docker-compose.dev-shared.yml build
-docker compose -f docker-compose.dev-shared.yml --profile migrate up   # schema first
-docker compose -f docker-compose.dev-shared.yml up -d
-```
+That's Postgres only — MinIO and a compose file that also runs the nine
+services against shared infrastructure don't exist yet in this repo. Until
+either lands, MinIO (`S3_ENDPOINT`, `S3_BUCKET`) needs to be run and pointed
+at separately; see each service's own `.env.example`.
 
 Inside that network the database host is `postgres`, not `localhost`. The two
 files are alternatives, not layers: the shared one declares no Postgres and no

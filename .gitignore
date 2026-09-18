@@ -9,6 +9,8 @@ node_modules/
 *.pfx
 *.crt
 secrets/
+compose/env/*
+!compose/env/README.md
 
 # AI tooling (local-only)
 .claude/
