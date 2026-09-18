@@ -1,0 +1,205 @@
+name: 241-platform-production
+
+x-web-defaults: &web-defaults
+  restart: unless-stopped
+  expose:
+    - "8080"
+  healthcheck:
+    test: ["CMD", "wget", "-qO-", "http://localhost:8080/"]
+    interval: 15s
+    timeout: 5s
+    retries: 5
+    start_period: 10s
+  networks:
+    - platform-net
+
+x-service-defaults: &service-defaults
+  restart: unless-stopped
+  environment:
+    TRUST_PROXY: "1"
+  networks:
+    - platform-net
+
+services:
+  gateway:
+    image: ghcr.io/mts241alikhlash/platform-gateway@sha256:REPLACE_BEFORE_DEPLOYMENT
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      academic-web:
+        condition: service_healthy
+      admission-web:
+        condition: service_healthy
+      admin-web:
+        condition: service_healthy
+      assessment-web:
+        condition: service_healthy
+      hr-web:
+        condition: service_healthy
+      inventory-web:
+        condition: service_healthy
+      portal-web:
+        condition: service_healthy
+      identity-service:
+        condition: service_healthy
+      academic-service:
+        condition: service_healthy
+      inventory-service:
+        condition: service_healthy
+      presence-service:
+        condition: service_healthy
+      portal-service:
+        condition: service_healthy
+      admission-service:
+        condition: service_healthy
+      hr-service:
+        condition: service_healthy
+      student-service:
+        condition: service_healthy
+      assessment-service:
+        condition: service_healthy
+    networks:
+      - platform-net
+
+  academic-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/academic-web@sha256:REPLACE_BEFORE_DEPLOYMENT
+
+  admission-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/admission-web@sha256:REPLACE_BEFORE_DEPLOYMENT
+
+  admin-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/admin-web@sha256:REPLACE_BEFORE_DEPLOYMENT
+
+  assessment-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/assessment-web@sha256:REPLACE_BEFORE_DEPLOYMENT
+
+  hr-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/hr-web@sha256:REPLACE_BEFORE_DEPLOYMENT
+
+  inventory-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/inventory-web@sha256:REPLACE_BEFORE_DEPLOYMENT
+
+  portal-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/portal-web@sha256:REPLACE_BEFORE_DEPLOYMENT
+
+  identity-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  academic-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/academic-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    expose:
+      - "3200"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3200/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  inventory-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/inventory-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    expose:
+      - "3300"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3300/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  presence-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/presence-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    expose:
+      - "3400"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3400/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  portal-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/portal-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    expose:
+      - "3600"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3600/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  admission-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/admission-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    expose:
+      - "3700"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3700/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  hr-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/hr-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    expose:
+      - "3800"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3800/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  student-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/student-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    expose:
+      - "3900"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3900/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  assessment-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/assessment-service@sha256:REPLACE_BEFORE_DEPLOYMENT
+    expose:
+      - "4000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+networks:
+  platform-net:
+    name: 241-platform-net
+    external: true

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "app": "assessment",
+  "webVersion": "0.1.0",
+  "servicePrefixes": {
+    "identity": [
+      "/auth",
+      "/users",
+      "/profiles",
+      "/roles",
+      "/permissions",
+      "/school-units",
+      "/religions",
+      "/blood-types"
+    ],
+    "assessment": [
+      "/assessment-items",
+      "/assessment-weights",
+      "/attendances",
+      "/dashboards",
+      "/rapors",
+      "/student-scores"
+    ],
+    "academic": [
+      "/academic-years",
+      "/classrooms",
+      "/semesters",
+      "/subjects",
+      "/teaching-assignments"
+    ],
+    "student": [
+      "/students",
+      "/student-enrollments"
+    ]
+  },
+  "unroutedPrefixes": [],
+  "healthRoutes": [
+    { "path": "/health/identity", "service": "identity" },
+    { "path": "/health/assessment", "service": "assessment" },
+    { "path": "/health/academic", "service": "academic" },
+    { "path": "/health/student", "service": "student" }
+  ]
+}

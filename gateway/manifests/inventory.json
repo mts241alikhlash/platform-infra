@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "app": "inventory",
+  "webVersion": "0.1.0",
+  "servicePrefixes": {
+    "identity": [
+      "/auth",
+      "/profiles",
+      "/school-unit-types",
+      "/religions",
+      "/blood-types"
+    ],
+    "inventory": [
+      "/inventory"
+    ]
+  },
+  "unroutedPrefixes": [
+    "/dashboard",
+    "/settings"
+  ],
+  "healthRoutes": [
+    { "path": "/health/identity", "service": "identity" },
+    { "path": "/health/inventory", "service": "inventory" }
+  ]
+}

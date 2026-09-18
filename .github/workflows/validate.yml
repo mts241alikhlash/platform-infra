@@ -1,0 +1,51 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.20.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: node --check deployment/validate-lock.mjs
+      - run: node gateway/generate.mjs --check
+      - run: node gateway/generate.self-check.mjs
+      - run: pnpm run check
+      - name: Validate generated HTTP Nginx config
+        run: >-
+          docker run --rm
+          -v "$PWD/gateway/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+          nginx:1.27-alpine nginx -t
+      - name: Validate generated TLS Nginx config
+        shell: bash
+        run: |
+          set -euo pipefail
+          workdir="$(mktemp -d)"
+          trap 'rm -rf "$workdir"' EXIT
+          openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
+            -subj '/CN=localhost' \
+            -keyout "$workdir/privkey.pem" -out "$workdir/fullchain.pem" 2>/dev/null
+          sed -E \
+            's#/etc/letsencrypt/live/[^/]+/(fullchain|privkey)\.pem#/tmp/tls/\1.pem#g' \
+            gateway/nginx.ssl.conf > "$workdir/nginx.conf"
+          docker run --rm \
+            -v "$workdir/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
+            -v "$workdir:/tmp/tls:ro" \
+            nginx:1.27-alpine nginx -t
+      - run: docker compose -f compose/docker-compose.staging.yml config
+      - run: docker compose -f compose/docker-compose.production.yml config
