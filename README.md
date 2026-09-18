@@ -28,3 +28,14 @@ GITHUB_TOKEN=<...>                      node scripts/latest-digests.mjs --write 
 
 See `docs/OVERVIEW.md` for the full picture: which service backs which app,
 the cross-service call map, and the operational rules that bite hardest.
+
+## `docker-compose.override.yml` on a shared VPS
+
+If the VPS already runs a host-level nginx that owns ports 80/443 (terminating
+TLS, reverse-proxying to the gateway on `127.0.0.1:8081`), the gateway can't
+also bind 80/443 — copy `compose/docker-compose.override.example.yml` to
+`compose/docker-compose.override.yml` on that VPS (git-ignored, like
+`compose/env/`) and Compose picks it up automatically alongside
+`docker-compose.<env>.yml`. A server without a pre-existing host nginx doesn't
+need it. Without it on a VPS that does, the gateway container fails to start —
+port already in use.
