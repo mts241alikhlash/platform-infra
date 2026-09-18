@@ -31,7 +31,9 @@ const SERVICES = [
   'presence-service', 'portal-service', 'admission-service',
   'hr-service', 'student-service', 'assessment-service',
 ]
-const COMPONENTS = [...APPS, ...SERVICES, 'platform-gateway']
+const COMPONENTS = [...APPS, ...SERVICES]
+
+const GATEWAY_TAG_SUFFIX = { staging: '', production: '-production' }
 
 async function gh(apiPath) {
   const res = await fetch(`https://api.github.com${apiPath}`, {
@@ -46,8 +48,9 @@ async function gh(apiPath) {
   return res.json()
 }
 
-function isSemver(tag) {
-  return /^\d+\.\d+\.\d+$/.test(tag)
+function isSemver(tag, suffix = '') {
+  const escaped = suffix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`^\\d+\\.\\d+\\.\\d+${escaped}$`).test(tag)
 }
 
 function compareSemver(a, b) {
@@ -59,16 +62,17 @@ function compareSemver(a, b) {
   return 0
 }
 
-async function latestFor(name) {
+async function latestFor(name, suffix = '') {
   const versions = await gh(
     `/orgs/${org}/packages/container/${name}/versions?per_page=100`,
   )
   let best = null
   for (const v of versions) {
     for (const tag of v.metadata?.container?.tags ?? []) {
-      if (!isSemver(tag)) continue
-      if (!best || compareSemver(tag, best.version) > 0) {
-        best = { version: tag, digest: v.name }
+      if (!isSemver(tag, suffix)) continue
+      const bareVersion = suffix ? tag.slice(0, -suffix.length) : tag
+      if (!best || compareSemver(bareVersion, best.version) > 0) {
+        best = { version: bareVersion, digest: v.name }
       }
     }
   }
@@ -84,11 +88,27 @@ for (const name of COMPONENTS) {
     console.error(`  ! ${name}: ${err.message}`)
   }
 }
+const gatewayResults = {}
+for (const [env, suffix] of Object.entries(GATEWAY_TAG_SUFFIX)) {
+  try {
+    gatewayResults[env] = await latestFor('platform-gateway', suffix)
+  } catch (err) {
+    gatewayResults[env] = null
+    console.error(`  ! platform-gateway (${env}): ${err.message}`)
+  }
+}
 
-const rows = COMPONENTS.map((name) => {
-  const r = results[name]
-  return { name, version: r?.version ?? '(none published)', digest: r?.digest ?? '' }
-})
+const rows = [
+  ...COMPONENTS.map((name) => {
+    const r = results[name]
+    return { name, version: r?.version ?? '(none published)', digest: r?.digest ?? '' }
+  }),
+  ...Object.entries(gatewayResults).map(([env, r]) => ({
+    name: `platform-gateway (${env})`,
+    version: r?.version ?? '(none published)',
+    digest: r?.digest ?? '',
+  })),
+]
 const nameWidth = Math.max(...rows.map((r) => r.name.length))
 console.log()
 for (const r of rows) {
@@ -96,7 +116,12 @@ for (const r of rows) {
 }
 console.log()
 
-const missing = COMPONENTS.filter((name) => !results[name])
+const missing = [
+  ...COMPONENTS.filter((name) => !results[name]),
+  ...Object.entries(gatewayResults)
+    .filter(([, r]) => !r)
+    .map(([env]) => `platform-gateway (${env})`),
+]
 if (missing.length) {
   console.error(`Missing a published image for: ${missing.join(', ')}`)
 }
@@ -119,7 +144,7 @@ if (missing.length) {
 // --- deployment/<env>.lock.json ---
 const lockPath = path.join(root, 'deployment', `${env}.lock.json`)
 const lock = JSON.parse(readFileSync(lockPath, 'utf8'))
-lock.gatewayImage = `ghcr.io/${org}/platform-gateway@sha256:${results['platform-gateway'].digest.replace('sha256:', '')}`
+lock.gatewayImage = `ghcr.io/${org}/platform-gateway@sha256:${gatewayResults[env].digest.replace('sha256:', '')}`
 for (const key of Object.keys(lock.apps)) {
   const r = results[`${key}-web`]
   lock.apps[key].webVersion = r.version
@@ -136,8 +161,7 @@ console.log(`wrote ${path.relative(root, lockPath)}`)
 // --- compose/docker-compose.<env>.yml ---
 const composePath = path.join(root, 'compose', `docker-compose.${env}.yml`)
 let compose = readFileSync(composePath, 'utf8')
-for (const name of COMPONENTS) {
-  const r = results[name]
+for (const [name, r] of [...COMPONENTS.map((n) => [n, results[n]]), ['platform-gateway', gatewayResults[env]]]) {
   const digest = r.digest.replace('sha256:', '')
   compose = compose.replaceAll(
     new RegExp(`ghcr\\.io/${org}/${name}@sha256:\\S+`, 'g'),
