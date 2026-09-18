@@ -31,10 +31,7 @@ assert.match(httpConfig, /server identity-service:3000 resolve;/)
 assert.match(renderConfig(model, { ssl: true }), /listen 443 ssl;/)
 assert.equal(validateModel({ manifests: model.manifests, upstreams: model.upstreams }), true)
 
-await assert.rejects(
-  () => loadInputs({ rootDir, environment: 'production' }),
-  /pinned by sha256 digest/,
-)
+await loadInputs({ rootDir, environment: 'production' })
 
 const academic = structuredClone(model.manifests.find(({ app }) => app === 'academic'))
 academic.servicePrefixes.identity.push('/auth')
