@@ -1,0 +1,15 @@
+{
+  "name": "241-platform-infra",
+  "private": true,
+  "version": "0.1.1",
+  "type": "module",
+  "scripts": {
+    "check": "node deployment/validate-lock.mjs",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^3.0.3"
+  }
+}

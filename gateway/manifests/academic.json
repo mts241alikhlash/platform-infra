@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "app": "academic",
+  "webVersion": "0.1.0",
+  "servicePrefixes": {
+    "identity": [
+      "/auth",
+      "/sessions",
+      "/users",
+      "/accounts",
+      "/profiles",
+      "/roles",
+      "/permissions",
+      "/audit-logs",
+      "/school-units",
+      "/school-unit-addresses",
+      "/school-unit-social-medias",
+      "/school-unit-types",
+      "/religions",
+      "/blood-types"
+    ],
+    "academic": [
+      "/academic-settings",
+      "/academic-years",
+      "/academic-calendars",
+      "/academic-calendar-types",
+      "/classrooms",
+      "/classroom-structures",
+      "/classroom-supervisors",
+      "/curricula",
+      "/curriculum-subjects",
+      "/grades",
+      "/grade-academic-years",
+      "/occupations",
+      "/schedules",
+      "/semesters",
+      "/semester-rollovers",
+      "/semester-types",
+      "/subjects",
+      "/teaching-assignments",
+      "/time-slots"
+    ],
+    "student": [
+      "/students",
+      "/student-enrollments",
+      "/student-parents",
+      "/student-graduations",
+      "/student-promotions",
+      "/parents"
+    ],
+    "hr": [
+      "/employees"
+    ]
+  },
+  "unroutedPrefixes": [],
+  "healthRoutes": [
+    { "path": "/health/identity", "service": "identity" },
+    { "path": "/health/academic", "service": "academic" },
+    { "path": "/health/student", "service": "student" },
+    { "path": "/health/hr", "service": "hr" }
+  ]
+}

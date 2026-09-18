@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "app": "hr",
+  "webVersion": "0.1.0",
+  "servicePrefixes": {
+    "identity": [
+      "/auth",
+      "/users",
+      "/profiles",
+      "/school-units",
+      "/school-unit-types",
+      "/religions",
+      "/blood-types"
+    ],
+    "presence": [
+      "/presence"
+    ],
+    "academic": [
+      "/academic-years",
+      "/academic-calendars"
+    ],
+    "hr": [
+      "/employees",
+      "/employee-positions",
+      "/positions",
+      "/position-categories",
+      "/employment-types",
+      "/payroll"
+    ],
+    "student": [
+      "/students"
+    ]
+  },
+  "unroutedPrefixes": [
+    "/dashboard",
+    "/settings"
+  ],
+  "healthRoutes": [
+    { "path": "/health/identity", "service": "identity" },
+    { "path": "/health/presence", "service": "presence" },
+    { "path": "/health/academic", "service": "academic" },
+    { "path": "/health/hr", "service": "hr" },
+    { "path": "/health/student", "service": "student" }
+  ]
+}
