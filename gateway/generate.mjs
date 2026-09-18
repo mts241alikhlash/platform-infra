@@ -621,7 +621,7 @@ server {
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;`
     : `server {
     listen 80${deployment.serverName === '_' ? ' default_server' : ''};
-    server_name ${deployment.serverName};
+    server_name ${deployment.sslServerName};
 
     add_header X-Frame-Options "SAMEORIGIN" always;
     add_header X-Content-Type-Options "nosniff" always;`
