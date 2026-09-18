@@ -1,4 +1,4 @@
-name: 241-platform-production
+name: mts241alikhlash-production
 
 x-web-defaults: &web-defaults
   restart: unless-stopped
@@ -307,5 +307,5 @@ services:
 
 networks:
   platform-net:
-    name: 241-platform-net
+    name: mts241alikhlash-net
     external: true

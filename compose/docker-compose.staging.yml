@@ -1,4 +1,4 @@
-name: 241-platform-staging
+name: mts241alikhlash-staging
 
 x-web-defaults: &web-defaults
   restart: unless-stopped
@@ -307,5 +307,5 @@ services:
 
 networks:
   platform-net:
-    name: 241-platform-net
+    name: mts241alikhlash-net
     external: true

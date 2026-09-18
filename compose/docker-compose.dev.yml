@@ -1,4 +1,4 @@
-name: 241-platform-dev
+name: mts241alikhlash-dev
 
 services:
   postgres:
