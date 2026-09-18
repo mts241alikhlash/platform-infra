@@ -1,0 +1,18 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+secrets/
+
+# AI tooling (local-only)
+.claude/
+.agents/
+.specify/
+skills-lock.json
+CLAUDE.md
