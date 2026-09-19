@@ -5,7 +5,7 @@
   "apps": {
     "academic": {
       "host": "_",
-      "sslHost": "YOUR_DOMAIN",
+      "sslHost": "dev-academic.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/academic",
       "webVersion": "0.1.0",
       "webImage": "ghcr.io/mts241alikhlash/academic-web@sha256:REPLACE_BEFORE_DEPLOYMENT",
@@ -14,7 +14,7 @@
     },
     "admin": {
       "host": "admin.localhost",
-      "sslHost": "ADMIN_DOMAIN",
+      "sslHost": "dev-admin.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/admin",
       "webVersion": "0.1.0",
       "webImage": "ghcr.io/mts241alikhlash/admin-web@sha256:REPLACE_BEFORE_DEPLOYMENT",
@@ -23,7 +23,7 @@
     },
     "admission": {
       "host": "ppdb.localhost",
-      "sslHost": "PPDB_DOMAIN",
+      "sslHost": "dev-admission.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/admission",
       "webVersion": "0.1.0",
       "webImage": "ghcr.io/mts241alikhlash/admission-web@sha256:REPLACE_BEFORE_DEPLOYMENT",
@@ -32,7 +32,7 @@
     },
     "assessment": {
       "host": "assessment.localhost",
-      "sslHost": "ASSESSMENT_DOMAIN",
+      "sslHost": "dev-assessment.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/assessment",
       "webVersion": "0.1.0",
       "webImage": "ghcr.io/mts241alikhlash/assessment-web@sha256:REPLACE_BEFORE_DEPLOYMENT",
@@ -41,7 +41,7 @@
     },
     "hr": {
       "host": "hr.localhost",
-      "sslHost": "HR_DOMAIN",
+      "sslHost": "dev-hr.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/hr",
       "webVersion": "0.1.0",
       "webImage": "ghcr.io/mts241alikhlash/hr-web@sha256:REPLACE_BEFORE_DEPLOYMENT",
@@ -50,7 +50,7 @@
     },
     "inventory": {
       "host": "simas.localhost",
-      "sslHost": "SIMAS_DOMAIN",
+      "sslHost": "dev-inventory.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/inventory",
       "webVersion": "0.1.0",
       "webImage": "ghcr.io/mts241alikhlash/inventory-web@sha256:REPLACE_BEFORE_DEPLOYMENT",
@@ -59,7 +59,7 @@
     },
     "portal": {
       "host": "portal.localhost",
-      "sslHost": "PORTAL_DOMAIN",
+      "sslHost": "dev-portal.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/portal",
       "webVersion": "0.1.0",
       "webImage": "ghcr.io/mts241alikhlash/portal-web@sha256:REPLACE_BEFORE_DEPLOYMENT",
