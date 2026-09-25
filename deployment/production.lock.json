@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "environment": "production",
-  "gatewayImage": "ghcr.io/mts241alikhlash/platform-gateway@sha256:549a9f65ef0bcb53d39a30afb47485b5a60adb6308ab1e05eb93f9fc17d6380b",
+  "gatewayImage": "ghcr.io/mts241alikhlash/platform-gateway@sha256:dd30d70afd2faf4ca490fd35874455f7eefcdb62bccac403f7f323c804695ef7",
   "apps": {
     "academic": {
       "host": "_",
