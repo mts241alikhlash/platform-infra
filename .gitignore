@@ -1,0 +1,21 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+secrets/
+compose/env/*
+!compose/env/README.md
+compose/docker-compose.override.yml
+
+# AI tooling (local-only)
+.claude/
+.agents/
+.specify/
+skills-lock.json
+CLAUDE.md
