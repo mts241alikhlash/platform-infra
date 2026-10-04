@@ -9,13 +9,8 @@ dc() {
 }
 
 report() {
-  dc ps -a
-  dc ps -a --format '{{.Name}} {{.State}} {{.Health}}' |
-    awk '$2 != "running" || ($3 != "" && $3 != "healthy") { print $1 }' |
-    while read -r container; do
-      echo "==> logs $container"
-      docker logs --tail 50 "$container" 2>&1
-    done
+  dc ps -a --format '{{.Name}} {{.State}} {{.Health}}'
+  echo "==> read logs on the VPS: docker logs --tail 100 <name>"
 }
 
 echo "==> pull"

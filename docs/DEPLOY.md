@@ -155,7 +155,9 @@ Release skips publishing when its version tag already exists.
 
 Every deploy pulls, runs the nine migrations, runs `seed-permissions.ts`,
 brings the stack up with `--wait`, and asks the gateway for
-`/health/identity`. A failure before `up` leaves the old containers running.
+`/health/identity`. The repository is public and so are its Actions logs:
+a failed deploy prints only container names and states there; read the
+container logs on the VPS. A failure before `up` leaves the old containers running.
 Old containers keep serving while migrations run, so a migration must work
 with the previous release's code: add first, remove in a later release. A
 failed Prisma migration stays in `_prisma_migrations`; fix it by hand with
