@@ -1,0 +1,105 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - compose/docker-compose.staging.yml
+      - deployment/staging.lock.json
+      - compose/docker-compose.production.yml
+      - deployment/production.lock.json
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        options:
+          - staging
+          - production
+        required: true
+      ref:
+        type: string
+        default: main
+        required: true
+
+permissions: {}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      environments: ${{ steps.plan.outputs.environments }}
+      sha: ${{ steps.plan.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          INPUT_ENVIRONMENT: ${{ inputs.environment }}
+          INPUT_REF: ${{ inputs.ref }}
+        run: |
+          if [[ "$EVENT" == workflow_dispatch ]]; then
+            sha="$(git rev-parse --verify --quiet "origin/$INPUT_REF^{commit}" || git rev-parse --verify "$INPUT_REF^{commit}")"
+            environments="[\"$INPUT_ENVIRONMENT\"]"
+          else
+            sha="$GITHUB_SHA"
+            changed="$(git diff --name-only "$BEFORE" "$GITHUB_SHA")"
+            list=()
+            for env in staging production; do
+              if grep -qxE "compose/docker-compose\.$env\.yml|deployment/$env\.lock\.json" <<< "$changed"; then
+                list+=("\"$env\"")
+              fi
+            done
+            environments="[$(IFS=,; echo "${list[*]}")]"
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "environments=$environments" >> "$GITHUB_OUTPUT"
+          echo "Deploy $sha to $environments" >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    needs: plan
+    if: needs.plan.outputs.environments != '[]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      max-parallel: 1
+      fail-fast: true
+      matrix:
+        environment: ${{ fromJSON(needs.plan.outputs.environments) }}
+    environment: ${{ matrix.environment }}
+    concurrency:
+      group: deploy-${{ matrix.environment }}
+      cancel-in-progress: false
+    steps:
+      - name: Deploy over SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          TARGET: ${{ matrix.environment }}
+          SHA: ${{ needs.plan.outputs.sha }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy -o IdentitiesOnly=yes -o BatchMode=yes "deploy@$DEPLOY_HOST" "$TARGET $SHA"
+      - name: Tag the production deploy
+        if: matrix.environment == 'production'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ needs.plan.outputs.sha }}
+        run: |
+          tag="production-$(date -u +%F)-${SHA::7}"
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" > /dev/null 2>&1; then
+            echo "Tag $tag already exists" >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh api "repos/$GITHUB_REPOSITORY/git/refs" -f "ref=refs/tags/$tag" -f "sha=$SHA" > /dev/null
+            echo "Tagged $tag" >> "$GITHUB_STEP_SUMMARY"
+          fi

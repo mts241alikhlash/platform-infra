@@ -1026,7 +1026,9 @@ without a changeset (`.github/scripts/require-changeset.mjs`). On `main`,
 version, writes `CHANGELOG.md`, and publishes — an app's image to GHCR and its
 routing manifest, a service's image, a package to GitHub Packages. Deploying is
 a separate step: pin the new digests with `scripts/latest-digests.mjs --write
-<env>` (see the README). `main` is the only long-lived branch.
+<env>` (see the README) and merge them; `deploy.yml` deploys staging at once
+and production after approval (`docs/DEPLOY.md`, "Automatic deploys"). `main`
+is the only long-lived branch.
 
 MAJOR here means the **HTTP contract** another service depends on changed — a
 breaking change of that kind compiles fine and turns nothing red, so check

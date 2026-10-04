@@ -4,7 +4,7 @@ Staging and production have never run. This is the order for the first
 install, which brings every service up together, so the "deploy X before Y"
 notes written for upgrades do not apply: what matters is publish, then
 migrate, then seed, then smoke-test. Every step that touches GitHub or the VPS
-is done by a person; nothing here runs on its own.
+is done by a person. Once it is done, later deploys run on their own (section 6).
 
 ## 1. Decisions and accounts (before anything is pushed)
 
@@ -142,3 +142,88 @@ calendar. Never run `seed-timetable.ts` there (it refuses production).
 
 Keep the previous images on the VPS until the smoke test passes: do not
 `docker image prune` before then.
+
+## 6. Automatic deploys
+
+`.github/workflows/deploy.yml` deploys over SSH. A push to `main` that
+changes `compose/docker-compose.staging.yml` or `deployment/staging.lock.json`
+deploys staging; the production pair deploys production after the owner
+approves the run in the `production` Environment. Both can be run by hand
+from the Actions tab (`Deploy` → `environment`, `ref`); a `ref` of an older
+`production-*` tag is the rollback. Digest commits no longer use `[skip ci]`:
+Release skips publishing when its version tag already exists.
+
+Every deploy pulls, runs the nine migrations, runs `seed-permissions.ts`,
+brings the stack up with `--wait`, and asks the gateway for
+`/health/identity`. A failure before `up` leaves the old containers running.
+Old containers keep serving while migrations run, so a migration must work
+with the previous release's code: add first, remove in a later release. A
+failed Prisma migration stays in `_prisma_migrations`; fix it by hand with
+`prisma migrate resolve` before the next deploy.
+
+One-time setup on the VPS:
+
+```bash
+sudo useradd -m -s /bin/bash -G docker deploy
+sudo install -d -o deploy -g deploy /srv/mts241alikhlash /srv/mts241alikhlash/staging /srv/mts241alikhlash/production
+sudo -u deploy git clone https://github.com/mts241alikhlash/platform-infra.git /srv/mts241alikhlash/staging/platform-infra
+sudo -u deploy git clone https://github.com/mts241alikhlash/platform-infra.git /srv/mts241alikhlash/production/platform-infra
+sudo install -o root -g root -m 0755 /srv/mts241alikhlash/staging/platform-infra/scripts/deploy-entry.sh /srv/mts241alikhlash/deploy-entry
+sudo -u deploy install -d -m 700 /home/deploy/.ssh
+docker network create mts241alikhlash-production-net
+```
+
+- Membership of `docker` is root-equivalent; the `deploy` user is as
+  powerful as root.
+- Each checkout gets its own `compose/env/<service>.env`, `compose/.env`
+  (`TRUST_PROXY=3`) and `compose/docker-compose.override.yml`. Staging's
+  override binds the gateway to `127.0.0.1:8081`, production's to
+  `127.0.0.1:8082`. Each points at its own databases (for example
+  `identity_staging` and `identity`), ideally with its own Postgres role.
+- Production's override also moves its stack onto its own network, or both
+  stacks share `mts241alikhlash-net` and Docker DNS answers
+  `identity-service` with either stack's container:
+
+  ```yaml
+  services:
+    gateway:
+      ports: !override
+        - "127.0.0.1:8082:80"
+  networks:
+    platform-net:
+      name: mts241alikhlash-production-net
+      external: true
+  ```
+- Run `docker login ghcr.io` (section 1) as `deploy` when the images are
+  private.
+- Host nginx sends the `dev-*` hosts to `127.0.0.1:8081` and the production
+  hosts to `127.0.0.1:8082`.
+- `python3` must be installed.
+- Re-copy `deploy-entry` by hand whenever `scripts/deploy-entry.sh` changes;
+  it is the one file a deploy does not update.
+
+Keys, one per environment, generated on your own machine:
+
+```bash
+ssh-keygen -t ed25519 -N '' -C deploy-staging -f deploy-staging
+ssh-keygen -t ed25519 -N '' -C deploy-production -f deploy-production
+ssh-keyscan -t ed25519 <DEPLOY_HOST> > known_hosts
+```
+
+`<DEPLOY_HOST>` is exactly the string stored in the `DEPLOY_HOST` secret (the
+same IP or the same hostname), or host-key checking refuses the connection.
+
+Append each public key to `/home/deploy/.ssh/authorized_keys` (mode 600,
+owned by `deploy`) as below. The argument binds a key to one environment:
+the staging key cannot deploy production.
+
+```
+restrict,command="/srv/mts241alikhlash/deploy-entry staging" ssh-ed25519 AAAA... deploy-staging
+restrict,command="/srv/mts241alikhlash/deploy-entry production" ssh-ed25519 AAAA... deploy-production
+```
+
+In GitHub, Settings → Environments, create `staging` and `production`. Give
+each the secrets `DEPLOY_SSH_KEY` (its private key file), `DEPLOY_HOST` (the
+VPS address) and `DEPLOY_KNOWN_HOSTS` (the `known_hosts` file). On
+`production`, add the owner as a required reviewer. On both, restrict
+deployment branches to `main`. Delete the local private key files afterwards.

@@ -14,6 +14,7 @@ jobs:
       contents: read
     outputs:
       mode: ${{ steps.select.outputs.mode }}
+      released: ${{ steps.released.outputs.value }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -28,6 +29,15 @@ jobs:
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - uses: changesets/action/select-mode@v2
         id: select
+      - name: Check whether this version is already released
+        id: released
+        run: |
+          tag="$(node -p "require('./package.json').name")@$(node -p "require('./package.json').version")"
+          if git rev-parse -q --verify "refs/tags/$tag" > /dev/null; then
+            echo "value=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=false" >> "$GITHUB_OUTPUT"
+          fi
 
   version:
     needs: select-mode
@@ -55,7 +65,7 @@ jobs:
 
   publish:
     needs: select-mode
-    if: needs.select-mode.outputs.mode == 'publish'
+    if: needs.select-mode.outputs.mode == 'publish' && needs.select-mode.outputs.released == 'false'
     runs-on: ubuntu-latest
     permissions:
       contents: write
