@@ -56,6 +56,11 @@ for (const app of ['academic', 'admin', 'admission', 'assessment', 'hr', 'invent
   )
 }
 assert.match(httpConfig, /Route not handled by gateway/)
+assert.doesNotMatch(
+  httpConfig.match(/map \$http_sec_fetch_mode \$serve_spa_shell \{[^}]*\}/)[0],
+  /"no-cors"/,
+  'no-cors loads such as <img src="/logo.webp"> reach the web image',
+)
 assert.match(httpConfig, /location ~ \^\/\(settings\)\(\/\|\$\)/)
 assert.match(httpConfig, /server_name dev-portal\.mts241alikhlash\.sch\.id;/)
 assert.match(httpConfig, /upstream academic_web \{[\s\S]*server academic-web:8080 resolve;/)

@@ -12,8 +12,6 @@ secrets/
 compose/env/*
 !compose/env/README.md
 compose/docker-compose.override.yml
-
-# AI tooling (local-only)
 .claude/
 .agents/
 .specify/

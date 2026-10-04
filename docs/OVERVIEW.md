@@ -25,7 +25,7 @@ their paths through this table; the rules they state still hold.
 
 | Before 2026-09-15 | Now |
 | --- | --- |
-| `infra/nginx/generate.mjs`, `infra/nginx/*.conf` | `platform-infra/gateway/generate.mjs` and `gateway/nginx*.conf`; the old generator survives in `gateway-source/nginx/` for comparison only |
+| `infra/nginx/generate.mjs`, `infra/nginx/*.conf` | `platform-infra/gateway/generate.mjs` and `gateway/nginx*.conf` |
 | `infra/postgres/init-databases.sql` | `platform-infra/gateway-source/postgres/init-databases.sql` |
 | `docker-compose.prod.yml`, `docker-compose.dev.yml` | `platform-infra/compose/docker-compose.{production,staging,dev}.yml` |
 | each app's or service's `CLAUDE.md` | its `docs/OVERVIEW.md`; no `CLAUDE.md` is checked in |

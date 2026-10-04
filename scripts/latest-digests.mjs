@@ -25,7 +25,7 @@ const SERVICES = [
 ]
 const COMPONENTS = [...APPS, ...SERVICES]
 
-const GATEWAY_TAG_SUFFIX = { staging: '', production: '-production' }
+const GATEWAY_TAG_SUFFIX = { staging: '-staging', production: '' }
 
 async function gh(apiPath) {
   const res = await fetch(`https://api.github.com${apiPath}`, {

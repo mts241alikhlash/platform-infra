@@ -506,10 +506,6 @@ function regexGroup(prefixes) {
     .join('|')
 }
 
-function banner(label) {
-  return `    # ${'-'.repeat(Math.max(1, 64 - label.length))} ${label}`
-}
-
 function upstreamName(service) {
   return `${service}_service`
 }
@@ -525,8 +521,7 @@ function webServiceName(app) {
 function proxyBlock({ service, prefixes }, upstreams, ssl) {
   const sortedPrefixes = [...prefixes].sort()
   const upstream = upstreamName(service)
-  return `${banner(service)}
-    location ~ ^/(${regexGroup(sortedPrefixes)})(/|$) {
+  return `    location ~ ^/(${regexGroup(sortedPrefixes)})(/|$) {
         proxy_pass         http://${upstream};
         proxy_http_version 1.1;
         proxy_set_header   Host              $host;
@@ -572,9 +567,7 @@ function securityHeaders(ssl, pad) {
 function webProxyBlock(app, ssl) {
   const upstream = webUpstreamName(app.app)
   const forwardedProto = ssl ? 'https' : '$scheme'
-  return `${banner('web')}
-    # The web image owns the static release and SPA shell.
-    location /assets/ {
+  return `    location /assets/ {
         proxy_pass         http://${upstream};
         proxy_http_version 1.1;
         proxy_set_header   Host              $host;
@@ -587,7 +580,6 @@ function webProxyBlock(app, ssl) {
 ${securityHeaders(ssl, '        ')}
     }
 
-    # index.html names the current hashed bundles and must not be cached.
     location = /index.html {
         proxy_pass         http://${upstream};
         proxy_http_version 1.1;
@@ -599,7 +591,6 @@ ${securityHeaders(ssl, '        ')}
 ${securityHeaders(ssl, '        ')}
     }
 
-    # Browser navigations reach the web image; API-style fetches do not get its SPA fallback.
     location / {
         if ($serve_spa_shell = 0) {
 ${refusalReturn('            ')}
@@ -651,37 +642,17 @@ ${securityHeaders(false, '    ')}`
 
   const unrouted =
     app.unroutedPrefixes.length === 0
-      ? `${banner('unrouted')}
-    # No known API prefixes are intentionally unrouted for this app.`
-      : `${banner('unrouted')}
-    # Refuse known API prefixes before the SPA fallback can serve HTML.
-    location ~ ^/(${regexGroup([...app.unroutedPrefixes].sort())})(/|$) {
+      ? ''
+      : `    location ~ ^/(${regexGroup([...app.unroutedPrefixes].sort())})(/|$) {
 ${refusal('        ')}
     }`
 
-  return `# ===========================================================================
-# ${app.app}-web
-# ===========================================================================
-${serverHead}
-
-${routed}
-
-${health}
-
-${unrouted}
-
-${webProxyBlock(app, ssl)}
+  return `${[serverHead, routed, health, unrouted, webProxyBlock(app, ssl)].filter(Boolean).join('\n\n')}
 }`
 }
 
 export function renderConfig(model, { ssl }) {
   validateModel(model)
-  const sourceLines = (model.artifacts ?? model.manifests).map((artifact) => {
-    const manifest = artifact.manifest ?? artifact
-    const fileName = artifact.fileName ?? `${manifest.app}.json`
-    const checksum = artifact.checksum ? ` sha256:${artifact.checksum}` : ''
-    return `#              gateway/manifests/${fileName}${checksum}`
-  })
   const serviceUpstreams = Object.entries(model.upstreams)
     .sort(([left], [right]) => compare(left, right))
     .map(
@@ -701,29 +672,8 @@ export function renderConfig(model, { ssl }) {
     )
     .join('\n\n')
   const upstreams = [serviceUpstreams, webUpstreams].filter(Boolean).join('\n\n')
-  const sslNote = ssl
-    ? '# TLS variant. Certificates must exist at the manifest host paths before use.\n'
-    : ''
 
-  return `# GENERATED FILE - DO NOT EDIT BY HAND.
-#
-# Environment: ${model.environment ?? 'unknown'}
-# Sources:     gateway/schema/routing-manifest.schema.json
-${sourceLines.join('\n')}
-#              upstreams/services.json
-#              deployment/${model.environment ?? 'unknown'}.lock.json
-# Generator:   gateway/generate.mjs
-# Regenerate:  node gateway/generate.mjs
-# Verify:      node gateway/generate.mjs --check
-#
-# One origin serves each SPA and its API paths. This preserves same-site
-# authentication cookies while keeping service-to-service traffic private.
-#
-# Docker embedded DNS follows recreated service containers after its validity
-# window. Every upstream remains named directly in proxy_pass for URI stability.
-#
-# Nginx refuses a UTF-8 BOM; this file is emitted as UTF-8 without one.
-${sslNote}resolver 127.0.0.11 valid=10s ipv6=off;
+  return `resolver 127.0.0.11 valid=10s ipv6=off;
 server_tokens off;
 client_max_body_size 6m;
 
@@ -734,13 +684,10 @@ map $http_upgrade $connection_upgrade {
     ''      close;
 }
 
-# Only browser navigations may use the SPA shell for an unmatched path.
-# Fetch/XHR requests receive JSON 404 instead of successful HTML.
 map $http_sec_fetch_mode $serve_spa_shell {
     default       1;
     "cors"        0;
     "same-origin" 0;
-    "no-cors"     0;
 }
 
 ${model.manifests.map((app) => serverBlock(app, model.deployments[app.app], model.upstreams, ssl)).join('\n\n')}
