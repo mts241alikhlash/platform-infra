@@ -25,6 +25,8 @@ jobs:
       - run: node --check deployment/validate-lock.mjs
       - run: node gateway/generate.mjs --check
       - run: node gateway/generate.self-check.mjs
+      - run: shellcheck scripts/deploy-entry.sh scripts/deploy-entry.test.sh scripts/deploy.sh
+      - run: bash scripts/deploy-entry.test.sh
       - run: pnpm run check
       - name: Validate generated HTTP Nginx config
         run: >-
