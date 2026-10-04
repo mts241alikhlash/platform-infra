@@ -18,6 +18,12 @@ updates:
       - dependency-name: '*'
         update-types:
           - version-update:semver-major
+      - dependency-name: nginx
+        update-types:
+          - version-update:semver-minor
+      - dependency-name: nginxinc/nginx-unprivileged
+        update-types:
+          - version-update:semver-minor
     groups:
       base-images:
         patterns:
