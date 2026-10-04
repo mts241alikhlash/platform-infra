@@ -40,7 +40,7 @@ is done by a person. Once it is done, later deploys run on their own (section 6)
    `pnpm run validate`, commit, push. Each release publishes the image and its
    routing manifest.
 5. **platform-infra.** Copy each app's published routing manifest into
-   `gateway/manifests/<app>.json`; `GITHUB_TOKEN=<PAT> node scripts/latest-digests.mjs --write staging`
+   `gateway/manifests/<app>-<version>.json`; `GITHUB_TOKEN=<PAT> node scripts/latest-digests.mjs --write staging`
    (replaces every `REPLACE_BEFORE_DEPLOYMENT`); `node gateway/generate.mjs`;
    `node gateway/generate.self-check.mjs`; commit, push. The release publishes
    the gateway image.
@@ -154,6 +154,19 @@ from the Actions tab (`Deploy` → `environment`, `ref`); a `ref` of an older
 in every repository, Release skips publishing a version whose tag already
 exists (`<package>@<version>`; in `services`, per service image), so a commit
 without a version bump rebuilds nothing.
+
+New releases reach the locks through `.github/workflows/update-lock.yml`.
+Every hour it compares the staging lock with the newest released app, service
+and gateway versions (public git tags, GitHub Release manifests and GHCR, no
+token), and opens or updates the pull request `Update the staging lock`;
+merging it deploys staging. Running it by hand with `production` opens
+`Update the production lock`, which copies staging's app and service pins and
+pins the production gateway; merging it waits for approval as usual. When the
+change alters an environment's gateway routes, the pull request adds a
+changeset and says so: the gateway has to be released and pinned before that
+environment serves the new routes. Pull requests the workflow opens do not
+trigger Validate; the workflow runs the generator, its self-check and the lock
+validation itself.
 
 A rollback runs the older images against the current database. It is safe
 only back to a release whose code still works with every migration applied

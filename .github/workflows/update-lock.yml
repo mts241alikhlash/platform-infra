@@ -1,0 +1,94 @@
+name: Update lock
+
+on:
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        options:
+          - staging
+          - production
+        default: staging
+        required: true
+
+permissions: {}
+
+concurrency:
+  group: update-lock-${{ inputs.environment || 'staging' }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      TARGET: ${{ inputs.environment || 'staging' }}
+      RENDER: |
+        import { loadInputs, renderConfig } from './gateway/generate.mjs'
+        const model = await loadInputs({ rootDir: '.', environment: process.env.TARGET })
+        process.stdout.write(renderConfig(model, { ssl: false }) + renderConfig(model, { ssl: true }))
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.21.0
+      - run: node scripts/update-lock.test.mjs
+      - name: Render the current gateway config
+        run: node --input-type=module -e "$RENDER" > "$RUNNER_TEMP/before.conf"
+      - name: Update the lock
+        run: node scripts/update-lock.mjs "$TARGET" | tee "$RUNNER_TEMP/changes.txt"
+      - name: Regenerate and check the gateway
+        run: |
+          node gateway/generate.mjs --environment production > /dev/null
+          node gateway/generate.mjs > /dev/null
+          node gateway/generate.mjs --check
+          node gateway/generate.self-check.mjs
+          node deployment/validate-lock.mjs
+      - name: Open or update the pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "Nothing to update for $TARGET" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          node --input-type=module -e "$RENDER" > "$RUNNER_TEMP/after.conf"
+          routes_changed=false
+          if ! cmp -s "$RUNNER_TEMP/before.conf" "$RUNNER_TEMP/after.conf"; then
+            routes_changed=true
+            printf -- '---\n"241-platform-infra": patch\n---\n\nRebuild the gateway for the %s routes.\n' "$TARGET" > ".changeset/gateway-routes-$TARGET.md"
+          fi
+
+          branch="automation/update-$TARGET-lock"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$branch"
+          git add deployment compose gateway .changeset
+          git commit --quiet -m "Update the $TARGET lock" -m "$(cat "$RUNNER_TEMP/changes.txt")"
+          if git fetch --quiet origin "$branch" 2> /dev/null && git diff --quiet "origin/$branch" HEAD; then
+            echo "The open $TARGET lock PR is already up to date" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git push --quiet --force origin "$branch"
+
+          {
+            echo "Pins the $TARGET lock and compose file to:"
+            echo
+            sed 's/^/- /' "$RUNNER_TEMP/changes.txt"
+            echo
+            echo "Opened by the Update lock workflow, which already ran the gateway generator, its self-check and the lock validation. Merging deploys $TARGET."
+            if [[ "$routes_changed" == true ]]; then
+              echo
+              echo "**The $TARGET gateway routes change.** This PR adds a changeset, so merging it also opens a Release PR for the gateway. Until that release is merged and the next Update lock run pins the new gateway, $TARGET serves the new apps through the old routes. For production, cancel the deploy this merge starts and approve the one for the gateway pin instead."
+            fi
+          } > "$RUNNER_TEMP/body.md"
+
+          if [[ "$(gh pr view "$branch" --json state --jq .state 2> /dev/null)" == OPEN ]]; then
+            gh pr edit "$branch" --body-file "$RUNNER_TEMP/body.md"
+          else
+            gh pr create --base main --head "$branch" --title "Update the $TARGET lock" --body-file "$RUNNER_TEMP/body.md"
+          fi

@@ -489,7 +489,8 @@ check. That covers `NESTJS-RULES.md`, `IAM.md`, the shared half of
 hand-edit them.** The routing table has one source per app — its own
 `api-routes.config.ts` — but the gateway never reads app source. Each app's
 release runs `pnpm run routes:emit` and publishes a JSON routing manifest with
-a SHA-256; that file lands in `gateway/manifests/<app>.json`, and
+a SHA-256; that file lands in `gateway/manifests/<app>-<version>.json` (one per version a
+lock pins, so staging and production can run different app versions), and
 `deployment/<env>.lock.json` pins its version and checksum beside the app's
 image digest. The generator renders both configs from the manifests,
 `upstreams/services.json`, and the lock:
@@ -1025,8 +1026,9 @@ without a changeset (`.github/scripts/require-changeset.mjs`). On `main`,
 `changesets/action` opens a "Release" pull request; merging it bumps the
 version, writes `CHANGELOG.md`, and publishes — an app's image to GHCR and its
 routing manifest, a service's image, a package to GitHub Packages. Deploying is
-a separate step: pin the new digests with `scripts/latest-digests.mjs --write
-<env>` (see the README) and merge them; `deploy.yml` deploys staging at once
+a separate step: the hourly Update lock workflow opens a pull request pinning
+the new digests into staging (run it by hand with `production` to promote what
+staging runs; see the README), and merging it deploys; `deploy.yml` deploys staging at once
 and production after approval (`docs/DEPLOY.md`, "Automatic deploys"). `main`
 is the only long-lived branch.
 
