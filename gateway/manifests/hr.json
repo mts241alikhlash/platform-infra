@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "app": "hr",
-  "webVersion": "0.1.0",
+  "webVersion": "1.0.0",
   "servicePrefixes": {
     "identity": [
       "/auth",
