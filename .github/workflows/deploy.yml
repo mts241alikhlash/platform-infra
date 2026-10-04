@@ -65,8 +65,7 @@ jobs:
     needs: plan
     if: needs.plan.outputs.environments != '[]'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    permissions: {}
     strategy:
       max-parallel: 1
       fail-fast: true
@@ -90,8 +89,17 @@ jobs:
           chmod 600 ~/.ssh/deploy
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
           ssh -i ~/.ssh/deploy -o IdentitiesOnly=yes -o BatchMode=yes "deploy@$DEPLOY_HOST" "$TARGET $SHA"
+
+  tag:
+    needs:
+      - plan
+      - deploy
+    if: contains(fromJSON(needs.plan.outputs.environments), 'production')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
       - name: Tag the production deploy
-        if: matrix.environment == 'production'
         env:
           GH_TOKEN: ${{ github.token }}
           SHA: ${{ needs.plan.outputs.sha }}

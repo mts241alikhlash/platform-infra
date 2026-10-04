@@ -151,11 +151,19 @@ deploys staging; the production pair deploys production after the owner
 approves the run in the `production` Environment. Both can be run by hand
 from the Actions tab (`Deploy` → `environment`, `ref`); a `ref` of an older
 `production-*` tag is the rollback. Digest commits no longer use `[skip ci]`:
-Release skips publishing when its version tag already exists.
+in every repository, Release skips publishing a version whose tag already
+exists (`<package>@<version>`; in `services`, per service image), so a commit
+without a version bump rebuilds nothing.
+
+A rollback runs the older images against the current database. It is safe
+only back to a release whose code still works with every migration applied
+since: after a release whose migrations drop or rename a column or table,
+roll forward with a fix instead.
 
 Every deploy pulls, runs the nine migrations, runs `seed-permissions.ts`,
 brings the stack up with `--wait`, and asks the gateway for
-`/health/identity`. The repository is public and so are its Actions logs:
+`/health/<service>` for all nine services, each through the host of an app
+that routes it. The repository is public and so are its Actions logs:
 a failed deploy prints only container names and states there; read the
 container logs on the VPS. A failure before `up` leaves the old containers running.
 Old containers keep serving while migrations run, so a migration must work
