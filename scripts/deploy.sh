@@ -13,6 +13,12 @@ report() {
   echo "==> read logs on the VPS: docker logs --tail 100 <name>"
 }
 
+network="$(dc config --format json | python3 -c 'import json, sys; print(json.load(sys.stdin)["networks"]["platform-net"]["name"])')"
+if [[ "$env" == production && "$network" == mts241alikhlash-net ]]; then
+  echo "production is on the staging network; set its own network in compose/docker-compose.override.yml" >&2
+  exit 1
+fi
+
 echo "==> pull"
 dc --profile migrate pull
 
@@ -31,10 +37,28 @@ trap report ERR
 echo "==> up"
 dc up -d --wait --wait-timeout 300
 
-host="$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["apps"]["account"]["sslHost"])' "deployment/$env.lock.json")"
+checks="$(python3 - "$env" "${services[@]}" <<'PY'
+import json
+import sys
+
+env, *services = sys.argv[1:]
+lock = json.load(open(f"deployment/{env}.lock.json"))
+routes = {}
+for app, pin in sorted(lock["apps"].items()):
+    manifest = json.load(open(f"gateway/manifests/{app}.json"))
+    for route in manifest["healthRoutes"]:
+        routes.setdefault(route["service"], (pin["sslHost"], route["path"]))
+missing = [service for service in services if service not in routes]
+if missing:
+    sys.exit(f"no health route for: {' '.join(missing)}")
+for service in services:
+    print(*routes[service])
+PY
+)"
 address="$(dc port gateway 80)"
-echo "==> health $host via $address"
-curl -fsS -m 10 -H "Host: $host" "http://$address/health/identity"
-echo
+while read -r host path; do
+  echo "==> health $host$path"
+  curl -fsS -m 10 -o /dev/null -H "Host: $host" "http://$address$path"
+done <<< "$checks"
 
 echo "==> deployed $(git rev-parse --short HEAD) to $env"
