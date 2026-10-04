@@ -1,0 +1,11 @@
+{
+  "identity": { "host": "identity-service", "port": 3000, "healthPath": "/health" },
+  "academic": { "host": "academic-service", "port": 3200, "healthPath": "/health" },
+  "inventory": { "host": "inventory-service", "port": 3300, "healthPath": "/health" },
+  "presence": { "host": "presence-service", "port": 3400, "healthPath": "/health" },
+  "portal": { "host": "portal-service", "port": 3600, "healthPath": "/health" },
+  "admission": { "host": "admission-service", "port": 3700, "healthPath": "/health" },
+  "hr": { "host": "hr-service", "port": 3800, "healthPath": "/health" },
+  "student": { "host": "student-service", "port": 3900, "healthPath": "/health" },
+  "assessment": { "host": "assessment-service", "port": 4000, "healthPath": "/health" }
+}

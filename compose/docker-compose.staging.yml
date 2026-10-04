@@ -1,0 +1,319 @@
+name: mts241alikhlash-staging
+
+x-web-defaults: &web-defaults
+  restart: unless-stopped
+  expose:
+    - "8080"
+  healthcheck:
+    test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/"]
+    interval: 15s
+    timeout: 5s
+    retries: 5
+    start_period: 10s
+  networks:
+    - platform-net
+
+x-service-defaults: &service-defaults
+  restart: unless-stopped
+  mem_limit: 320m
+  environment:
+    TRUST_PROXY: "${TRUST_PROXY:-1}"
+    NODE_OPTIONS: "--max-old-space-size=256"
+  networks:
+    - platform-net
+
+x-migrate-defaults: &migrate-defaults
+  restart: "no"
+  entrypoint: ["./node_modules/.bin/prisma"]
+  command: ["migrate", "deploy"]
+  networks:
+    - platform-net
+
+services:
+  gateway:
+    image: ghcr.io/mts241alikhlash/platform-gateway@sha256:2ff2b0f15f9103713e63092bf91c5960866e055152f06435df131d6fffba6265
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      academic-web:
+        condition: service_healthy
+      admission-web:
+        condition: service_healthy
+      admin-web:
+        condition: service_healthy
+      assessment-web:
+        condition: service_healthy
+      hr-web:
+        condition: service_healthy
+      account-web:
+        condition: service_healthy
+      inventory-web:
+        condition: service_healthy
+      portal-web:
+        condition: service_healthy
+      identity-service:
+        condition: service_healthy
+      academic-service:
+        condition: service_healthy
+      inventory-service:
+        condition: service_healthy
+      presence-service:
+        condition: service_healthy
+      portal-service:
+        condition: service_healthy
+      admission-service:
+        condition: service_healthy
+      hr-service:
+        condition: service_healthy
+      student-service:
+        condition: service_healthy
+      assessment-service:
+        condition: service_healthy
+    networks:
+      - platform-net
+
+  academic-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/academic-web@sha256:172d750509a96af058e6e95680844476d3dfb58e361350e4a5a7c5e9716f93ad
+
+  admission-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/admission-web@sha256:02551fad4d7a8c4076a247685e7c191fbc420c8020625c59ac50bc16ea1e0cc5
+
+  admin-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/admin-web@sha256:1654da347bc1cc39df6e4ae91be57ed584570a8493a002edd4a0f69cc1883422
+
+  assessment-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/assessment-web@sha256:12459eb2540cb2fc800652bc8c406785881d69235825c9d0ff16c1198da9b821
+
+  hr-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/hr-web@sha256:59c514cd65106e37d8f4400c5a4d02012de018ed277b592afdd992e1b0c51f09
+
+  account-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/account-web@sha256:51e69718d5b22082a21fcc113d48d62769b855898871988d5f7545ce4f77eae7
+
+  inventory-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/inventory-web@sha256:28aaaf31c7f473197c09be7174f647d8f98284a54930e8a084c7eddd6e2e8efb
+
+  portal-web:
+    <<: *web-defaults
+    image: ghcr.io/mts241alikhlash/portal-web@sha256:77630cc956ddc5346258e041df241182eb5880d2f2857f64bbe69cf9c9de2fbc
+
+  identity-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:d6be1c37fa4f06c3e05c78823647f8cf8755c79893ec928b5156981013b9bb16
+    env_file:
+      - path: env/identity-service.env
+        required: false
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  academic-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/academic-service@sha256:2227fe49d355fcc86a61aa7bc984406709db93beab560d41a66ad19317fff428
+    env_file:
+      - path: env/academic-service.env
+        required: false
+    expose:
+      - "3200"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3200/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  inventory-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/inventory-service@sha256:996a691ca8b95a9bfea0e1f0a52f9e5019b39d2295b4a7f71504dea485d12770
+    env_file:
+      - path: env/inventory-service.env
+        required: false
+    expose:
+      - "3300"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3300/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  presence-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/presence-service@sha256:546fb91ec13c7e9c356dfaafe9b26a6a4429745476183ee40ccef226bdd7f4d7
+    env_file:
+      - path: env/presence-service.env
+        required: false
+    expose:
+      - "3400"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3400/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  portal-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/portal-service@sha256:3eb2c5fb0c4264f4bc942a796eebef63a81feaeb3955831c278765684f78c5ba
+    env_file:
+      - path: env/portal-service.env
+        required: false
+    expose:
+      - "3600"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3600/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  admission-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/admission-service@sha256:610619b9c8cf1d13b3f293cf42c011eba5108011b28b662de8cb7148c4f58677
+    env_file:
+      - path: env/admission-service.env
+        required: false
+    expose:
+      - "3700"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3700/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  hr-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/hr-service@sha256:9959b52b9b9d0b11778214ef9b2f4b02cb7c52c6bec7cfeec967d0a0cf4b3134
+    env_file:
+      - path: env/hr-service.env
+        required: false
+    expose:
+      - "3800"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3800/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  student-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/student-service@sha256:a01eabe47d8c7cfdafc7fd03fc94cf5726403c61a7f8b9c89e49d64bcbc27079
+    env_file:
+      - path: env/student-service.env
+        required: false
+    expose:
+      - "3900"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3900/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  assessment-service:
+    <<: *service-defaults
+    image: ghcr.io/mts241alikhlash/assessment-service@sha256:61d90a019eb3c4bbfbda310cbbc65f206c716e19171f8e69bf565ca41fc79729
+    env_file:
+      - path: env/assessment-service.env
+        required: false
+    expose:
+      - "4000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:4000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  identity-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:d6be1c37fa4f06c3e05c78823647f8cf8755c79893ec928b5156981013b9bb16
+    profiles: ["migrate"]
+    env_file:
+      - path: env/identity-service.env
+        required: false
+
+  academic-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/academic-service@sha256:2227fe49d355fcc86a61aa7bc984406709db93beab560d41a66ad19317fff428
+    profiles: ["migrate"]
+    env_file:
+      - path: env/academic-service.env
+        required: false
+
+  inventory-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/inventory-service@sha256:996a691ca8b95a9bfea0e1f0a52f9e5019b39d2295b4a7f71504dea485d12770
+    profiles: ["migrate"]
+    env_file:
+      - path: env/inventory-service.env
+        required: false
+
+  presence-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/presence-service@sha256:546fb91ec13c7e9c356dfaafe9b26a6a4429745476183ee40ccef226bdd7f4d7
+    profiles: ["migrate"]
+    env_file:
+      - path: env/presence-service.env
+        required: false
+
+  portal-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/portal-service@sha256:3eb2c5fb0c4264f4bc942a796eebef63a81feaeb3955831c278765684f78c5ba
+    profiles: ["migrate"]
+    env_file:
+      - path: env/portal-service.env
+        required: false
+
+  admission-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/admission-service@sha256:610619b9c8cf1d13b3f293cf42c011eba5108011b28b662de8cb7148c4f58677
+    profiles: ["migrate"]
+    env_file:
+      - path: env/admission-service.env
+        required: false
+
+  hr-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/hr-service@sha256:9959b52b9b9d0b11778214ef9b2f4b02cb7c52c6bec7cfeec967d0a0cf4b3134
+    profiles: ["migrate"]
+    env_file:
+      - path: env/hr-service.env
+        required: false
+
+  student-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/student-service@sha256:a01eabe47d8c7cfdafc7fd03fc94cf5726403c61a7f8b9c89e49d64bcbc27079
+    profiles: ["migrate"]
+    env_file:
+      - path: env/student-service.env
+        required: false
+
+  assessment-service-migrate:
+    <<: *migrate-defaults
+    image: ghcr.io/mts241alikhlash/assessment-service@sha256:61d90a019eb3c4bbfbda310cbbc65f206c716e19171f8e69bf565ca41fc79729
+    profiles: ["migrate"]
+    env_file:
+      - path: env/assessment-service.env
+        required: false
+
+networks:
+  platform-net:
+    name: mts241alikhlash-net
+    external: true
