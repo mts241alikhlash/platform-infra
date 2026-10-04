@@ -25,12 +25,21 @@ Fill each one in from that service's own `.env.example` in the `services`
 repo (`services/services/<name>/.env.example`) with real values — same
 variables, same shape, just real credentials instead of the dev/example
 ones. `TRUST_PROXY` is set by the compose file itself, not here: it is the
-number of proxies in front of each service and defaults to `1`, the gateway.
-When another proxy sits in front of the gateway (Cloudflare, or the host nginx
-from `docker-compose.override.yml`), set `TRUST_PROXY=2` in a `.env` file next
-to the compose files or in the shell that runs `docker compose`. With the
-wrong count every client looks like the same address, and the login and
-registration rate limits are shared by everyone.
+number of proxies between the client and each service, and defaults to `1`,
+the gateway alone. Count every hop:
+
+| In front of the services | `TRUST_PROXY` |
+| --- | --- |
+| gateway | 1 |
+| Cloudflare → gateway, or host nginx → gateway | 2 |
+| Cloudflare → host nginx → gateway (the deployed setup) | 3 |
+
+Set it in `compose/.env` (next to the compose files, gitignored) or in the
+shell that runs `docker compose`. With the wrong count every client looks like
+the same address, and the login and registration rate limits are shared by
+everyone. The count is only trustworthy when the VPS accepts ports 80 and 443
+from Cloudflare's address ranges alone: a client that reaches the origin
+directly can write its own `X-Forwarded-For` and step around those limits.
 
 **Default every one of these files to `NODE_ENV=production` — including the
 ones for `docker-compose.staging.yml`.** Don't leave the example's

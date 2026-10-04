@@ -21,8 +21,9 @@ is done by a person; nothing here runs on its own.
       repositories). Their `.github/dependabot.yml` reads the
       `@mts241alikhlash/*` packages from GitHub Packages with it. Dependabot
       alerts and security updates are already on in every repository.
-- [ ] Say whether anything (Cloudflare, the host's nginx) sits in front of the
-      gateway: it decides `TRUST_PROXY` (`compose/env/README.md`).
+- [x] Traffic path, decided 2026-10-04: Cloudflare (proxied, SSL mode Full
+      (strict)) → host nginx with a Cloudflare Origin Certificate → gateway on
+      `127.0.0.1:8081` → services. `TRUST_PROXY=3` (`compose/env/README.md`).
 
 ## 2. Publish, in this order
 
@@ -50,9 +51,25 @@ is done by a person; nothing here runs on its own.
       database per service: `identity`, `academic`, `admission`, `hr`,
       `inventory`, `presence`, `portal`, `student`, `assessment`.
 - [ ] `docker network create mts241alikhlash-net`.
-- [ ] DNS and certificates for `dev-accounts`, `dev-academic`, `dev-admission`,
-      `dev-admin`, `dev-assessment`, `dev-hr`, `dev-inventory`, `dev-portal`
-      (`.mts241alikhlash.sch.id`).
+- [ ] 2 GB of swap (`free -m`); each NestJS service is capped at 320m.
+- [ ] Cloudflare, in the dashboard:
+  - proxied `A` records to the VPS for `dev-accounts`, `dev-academic`,
+    `dev-admission`, `dev-admin`, `dev-assessment`, `dev-hr`, `dev-inventory`
+    and `dev-portal` (`.mts241alikhlash.sch.id`);
+  - SSL/TLS mode **Full (strict)** and **Always Use HTTPS**;
+  - an Origin Certificate for `*.mts241alikhlash.sch.id` and
+    `mts241alikhlash.sch.id`.
+- [ ] Host nginx terminates TLS:
+  - the Origin Certificate and key in `/etc/ssl/cloudflare/` (key `chmod 600`);
+  - one `listen 443 ssl` server for the eight hosts with
+    `proxy_pass http://127.0.0.1:8081`, `proxy_set_header Host $host`,
+    `X-Forwarded-For $proxy_add_x_forwarded_for` and
+    `X-Forwarded-Proto https`; port 80 redirects to https.
+- [ ] `compose/docker-compose.override.yml` copied from
+      `docker-compose.override.example.yml` (binds the gateway to
+      `127.0.0.1:8081`), and `compose/.env` with `TRUST_PROXY=3`.
+- [ ] Firewall: ports 80 and 443 only from Cloudflare's ranges
+      (`https://www.cloudflare.com/ips-v4`, `ips-v6`); keep SSH open.
 - [ ] `compose/env/<service>.env` for the nine services, from each service's
       `.env.example` (`compose/env/README.md`):
   - `NODE_ENV=production` everywhere;
@@ -69,20 +86,23 @@ is done by a person; nothing here runs on its own.
 - [ ] Google Cloud console: authorised redirect URIs
       `https://dev-admission.mts241alikhlash.sch.id/auth/google/callback` and
       `https://dev-accounts.mts241alikhlash.sch.id/auth/google/callback`.
-- [ ] `docker login ghcr.io` with the PAT if the images are private.
 
 ## 4. Migrate and seed
 
+Compose loads `docker-compose.override.yml` on its own only when no `-f` is
+given, so every command names it:
+
 ```bash
 cd platform-infra
-docker compose -f compose/docker-compose.staging.yml --profile migrate pull
+dc() { docker compose -f compose/docker-compose.staging.yml -f compose/docker-compose.override.yml "$@"; }
+dc --profile migrate pull
 for s in identity academic admission hr inventory presence portal student assessment; do
-  docker compose -f compose/docker-compose.staging.yml --profile migrate run --rm "$s-service-migrate" || break
+  dc --profile migrate run --rm "$s-service-migrate" || break
 done
-seed() { docker compose -f compose/docker-compose.staging.yml run --rm --entrypoint ./node_modules/.bin/tsx "$@"; }
+seed() { dc run --rm --entrypoint ./node_modules/.bin/tsx "$@"; }
 seed -e SEED_ADMIN_PASSWORD='<12+ characters>' identity-service prisma/seed-admin-minimal.ts
 seed identity-service prisma/seed-permissions.ts
-docker compose -f compose/docker-compose.staging.yml up -d
+dc up -d
 ```
 
 The migrations also fill every default list (administrative areas, religions,
@@ -103,6 +123,11 @@ calendar. Never run `seed-timetable.ts` there (it refuses production).
       every service.
 - [ ] `SELECT level, count(*) FROM regions GROUP BY level` in `identity` gives
       38 provinces, 514 regencies, 7,285 districts and 83,762 villages.
+- [ ] `curl -m 5 http://<VPS IP>/` from outside Cloudflare times out (the
+      firewall holds), and `ss -ltnp` shows the gateway on `127.0.0.1:8081`
+      only.
+- [ ] A request through Cloudflare logs the client's real address in
+      identity-service, not a Cloudflare one (`TRUST_PROXY` is right).
 - [ ] Sign in at `dev-accounts` as `admin`; the launcher lists every app.
 - [ ] Open three apps from the launcher without a password; sign out of one;
       the other two sign out within about 5 seconds.
