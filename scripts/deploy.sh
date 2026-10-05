@@ -19,6 +19,13 @@ if [[ "$env" == production && "$network" == mts241alikhlash-net ]]; then
   exit 1
 fi
 
+docker_root="$(docker info --format '{{.DockerRootDir}}')"
+free_kb="$(df --output=avail -k "$docker_root" | tail -1)"
+if (( free_kb < 5 * 1024 * 1024 )); then
+  echo "less than 5 GB free under $docker_root; free space before deploying" >&2
+  exit 1
+fi
+
 echo "==> pull"
 dc --profile migrate pull
 
@@ -60,5 +67,13 @@ while read -r host path; do
   echo "==> health $host$path"
   curl -fsS -m 10 -o /dev/null -H "Host: $host" "http://$address$path"
 done <<< "$checks"
+
+echo "==> remove platform images no container uses"
+docker image ls --format '{{.ID}} {{.Repository}}' |
+  awk '$2 ~ /^ghcr\.io\/mts241alikhlash\// { print $1 }' |
+  sort -u |
+  while read -r id; do
+    docker image rm "$id" > /dev/null 2>&1 || true
+  done
 
 echo "==> deployed $(git rev-parse --short HEAD) to $env"

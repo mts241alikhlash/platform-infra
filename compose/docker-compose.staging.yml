@@ -1,7 +1,14 @@
 name: mts241alikhlash-staging
 
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: "3"
+
 x-web-defaults: &web-defaults
   restart: unless-stopped
+  logging: *logging
   expose:
     - "8080"
   healthcheck:
@@ -15,6 +22,7 @@ x-web-defaults: &web-defaults
 
 x-service-defaults: &service-defaults
   restart: unless-stopped
+  logging: *logging
   mem_limit: 320m
   environment:
     TRUST_PROXY: "${TRUST_PROXY:-1}"
@@ -24,6 +32,7 @@ x-service-defaults: &service-defaults
 
 x-migrate-defaults: &migrate-defaults
   restart: "no"
+  logging: *logging
   entrypoint: ["./node_modules/.bin/prisma"]
   command: ["migrate", "deploy"]
   networks:
@@ -31,6 +40,7 @@ x-migrate-defaults: &migrate-defaults
 
 services:
   gateway:
+    logging: *logging
     image: ghcr.io/mts241alikhlash/platform-gateway@sha256:753f022d09b044e596cfd15eb74d27f91cd0aeb0a19a9631909245b3f0862be6
     restart: unless-stopped
     ports:

@@ -173,10 +173,17 @@ only back to a release whose code still works with every migration applied
 since: after a release whose migrations drop or rename a column or table,
 roll forward with a fix instead.
 
-Every deploy pulls, runs the nine migrations, runs `seed-permissions.ts`,
+Every deploy first refuses to start with less than 5 GB free under Docker's
+root directory, then pulls, runs the nine migrations, runs `seed-permissions.ts`,
 brings the stack up with `--wait`, and asks the gateway for
 `/health/<service>` for all nine services, each through the host of an app
-that routes it. The repository is public and so are its Actions logs:
+that routes it. Only after every check passes does it run
+removes every `ghcr.io/mts241alikhlash/*` image no container uses. Images in
+use, by either environment, are refused by Docker and kept, and images of other
+projects on the VPS are never touched. A
+rollback pulls its pinned digests from GHCR again, so nothing it needs is
+lost; a failed deploy prunes nothing. Every container's log is capped at three
+10 MB files (`x-logging` in both compose files). The repository is public and so are its Actions logs:
 a failed deploy prints only container names and states there; read the
 container logs on the VPS. A failure before `up` leaves the old containers running.
 Old containers keep serving while migrations run, so a migration must work
