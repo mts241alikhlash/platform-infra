@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "app": "admin",
+  "webVersion": "1.1.0",
+  "servicePrefixes": {
+    "identity": [
+      "/auth",
+      "/sso",
+      "/users",
+      "/profiles",
+      "/roles",
+      "/permissions",
+      "/audit-logs",
+      "/school-units",
+      "/school-unit-addresses",
+      "/school-unit-social-medias",
+      "/school-unit-types",
+      "/religions",
+      "/blood-types"
+    ],
+    "portal": [
+      "/files"
+    ],
+    "inventory": [
+      "/inventory/workflows/role-usage"
+    ]
+  },
+  "unroutedPrefixes": [],
+  "healthRoutes": [
+    {
+      "path": "/health/identity",
+      "service": "identity"
+    },
+    {
+      "path": "/health/portal",
+      "service": "portal"
+    }
+  ]
+}
