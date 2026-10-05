@@ -15,7 +15,15 @@ node gateway/generate.mjs --check
 ## Picking versions to deploy
 
 Every app and service versions independently — there's no single platform
-version. `scripts/latest-digests.mjs` reports the latest published digest of
+version. The **Update lock** workflow (`.github/workflows/update-lock.yml`)
+runs every hour: it pins every newly released app, service and gateway into
+the staging lock and compose file, downloads the app's routing manifest from
+its GitHub Release into `gateway/manifests/<app>-<version>.json`, and opens a
+pull request; merging it deploys staging. Run it by hand with `production`
+to promote exactly what staging runs. It reads only public tags, releases and
+GHCR, so it needs no token.
+
+By hand, `scripts/latest-digests.mjs` reports the latest published digest of
 all 17 components (7 web apps, 9 services, the gateway) in one shot, and can
 pin them straight into `deployment/<env>.lock.json` and
 `compose/docker-compose.<env>.yml` at once (both files need the same digest,

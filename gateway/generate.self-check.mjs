@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -47,9 +46,7 @@ assert.match(
   'the accounts host routes /sso to identity',
 )
 for (const app of ['academic', 'admin', 'admission', 'assessment', 'hr', 'inventory', 'portal']) {
-  const manifest = JSON.parse(
-    readFileSync(new URL(`./manifests/${app}.json`, import.meta.url), 'utf8'),
-  )
+  const manifest = model.manifests.find((entry) => entry.app === app)
   assert.ok(
     manifest.servicePrefixes.identity.includes('/sso'),
     `${app} routes /sso to identity`,
