@@ -86,35 +86,35 @@ services:
 
   academic-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/academic-web@sha256:c91ec6273862145060b69fc82b1bc7960f3f8488d5fd8724c5a5f6b99aa0bc91
+    image: ghcr.io/mts241alikhlash/academic-web@sha256:56d68932c5621b33a8e9396437f919f7047b04aec9bcaace59959d1176f63e20
 
   admission-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/admission-web@sha256:9bc965743bd4e987ea4477babb3fc586536bc8fb81e53fc6045f591e36363599
+    image: ghcr.io/mts241alikhlash/admission-web@sha256:9d4e8dc3447efd0a2fe031abcdeb9a70e50405e93432ff0e65519bcb24e36a53
 
   admin-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/admin-web@sha256:1a5a75788a22911102b0638bce35ff1b7b77fc1107a93476f82f17b531f9330f
+    image: ghcr.io/mts241alikhlash/admin-web@sha256:b8287527d47160219e1ab39b520be2813ba5f5ed5a300625b218ac2d18576ed1
 
   assessment-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/assessment-web@sha256:e8ba48403b08f4b0d4ab18e06bcec40613f7e6ebb585d20bd06be9667d58f913
+    image: ghcr.io/mts241alikhlash/assessment-web@sha256:d84ede5e2149c3de48da19639d5252729e127334a0261f7feed41eb9b0d589e4
 
   hr-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/hr-web@sha256:586a2ac5c35cbe90e75db9bae1c50eccb2204a4d25feab74a63edca5a389e99f
+    image: ghcr.io/mts241alikhlash/hr-web@sha256:19b34b3f7f6b9f36817f6b0cb31b7d9f42cb2e92e7078cedce41f95f6e42d258
 
   account-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/account-web@sha256:84d82a5d960d89ea2a7249d412c9f1c096b3bf276e8d863b42ecff3a6297cc92
+    image: ghcr.io/mts241alikhlash/account-web@sha256:6af626e0efc0ada814e2efb5472f21f356879398fd490f4a2f08bc51200354bd
 
   inventory-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/inventory-web@sha256:46ef244ed7005dd4a7a9d958c45ef24195e7360def8a1d73d155ba4402520774
+    image: ghcr.io/mts241alikhlash/inventory-web@sha256:79ab023b83bc4d7efa5a4a7f4b441740b9112ff4f8b7c53fed34f84b99b65721
 
   portal-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/portal-web@sha256:265a04a76b0aac7d1557c4689033f1a2928e2d5497dd43441787ec041c1769c2
+    image: ghcr.io/mts241alikhlash/portal-web@sha256:0720f1da2823bd3db6e1887b46d38823ef43a96326e87971ba5a46e2756aac92
 
   identity-service:
     <<: *service-defaults
