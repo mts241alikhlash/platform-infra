@@ -22,6 +22,7 @@ jobs:
           node-version: 24.21.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm dedupe --check
       - run: node --check deployment/validate-lock.mjs
       - run: node gateway/generate.mjs --check
       - run: node gateway/generate.self-check.mjs
