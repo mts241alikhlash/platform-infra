@@ -42,21 +42,30 @@ jobs:
           BEFORE: ${{ github.event.before }}
           INPUT_ENVIRONMENT: ${{ inputs.environment }}
           INPUT_REF: ${{ inputs.ref }}
+          STAGING_PARKED: ${{ vars.STAGING_PARKED }}
         run: |
+          list=()
           if [[ "$EVENT" == workflow_dispatch ]]; then
             sha="$(git rev-parse --verify --quiet "origin/$INPUT_REF^{commit}" || git rev-parse --verify "$INPUT_REF^{commit}")"
-            environments="[\"$INPUT_ENVIRONMENT\"]"
+            list=("$INPUT_ENVIRONMENT")
           else
             sha="$GITHUB_SHA"
             changed="$(git diff --name-only "$BEFORE" "$GITHUB_SHA")"
-            list=()
             for env in staging production; do
               if grep -qxE "compose/docker-compose\.$env\.yml|deployment/$env\.lock\.json" <<< "$changed"; then
-                list+=("\"$env\"")
+                list+=("$env")
               fi
             done
-            environments="[$(IFS=,; echo "${list[*]}")]"
           fi
+          targets=()
+          for env in "${list[@]}"; do
+            if [[ "$env" == staging && "$STAGING_PARKED" == true ]]; then
+              echo "Staging is parked (repository variable STAGING_PARKED); not deployed" >> "$GITHUB_STEP_SUMMARY"
+            else
+              targets+=("\"$env\"")
+            fi
+          done
+          environments="[$(IFS=,; echo "${targets[*]}")]"
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
           echo "environments=$environments" >> "$GITHUB_OUTPUT"
           echo "Deploy $sha to $environments" >> "$GITHUB_STEP_SUMMARY"
@@ -68,7 +77,7 @@ jobs:
     permissions: {}
     strategy:
       max-parallel: 1
-      fail-fast: true
+      fail-fast: false
       matrix:
         environment: ${{ fromJSON(needs.plan.outputs.environments) }}
     environment: ${{ matrix.environment }}
