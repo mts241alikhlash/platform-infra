@@ -68,7 +68,12 @@ while read -r host path; do
   curl -fsS -m 10 -o /dev/null -H "Host: $host" "http://$address$path"
 done <<< "$checks"
 
-echo "==> prune images no container uses"
-docker image prune --all --force | tail -1
+echo "==> remove platform images no container uses"
+docker image ls --format '{{.ID}} {{.Repository}}' |
+  awk '$2 ~ /^ghcr\.io\/mts241alikhlash\// { print $1 }' |
+  sort -u |
+  while read -r id; do
+    docker image rm "$id" > /dev/null 2>&1 || true
+  done
 
 echo "==> deployed $(git rev-parse --short HEAD) to $env"

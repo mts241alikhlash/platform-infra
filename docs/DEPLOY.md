@@ -165,8 +165,9 @@ root directory, then pulls, runs the nine migrations, runs `seed-permissions.ts`
 brings the stack up with `--wait`, and asks the gateway for
 `/health/<service>` for all nine services, each through the host of an app
 that routes it. Only after every check passes does it run
-`docker image prune --all`: images no container uses are deleted, which on a
-shared VPS also spares every image the other environment is running. A
+removes every `ghcr.io/mts241alikhlash/*` image no container uses. Images in
+use, by either environment, are refused by Docker and kept, and images of other
+projects on the VPS are never touched. A
 rollback pulls its pinned digests from GHCR again, so nothing it needs is
 lost; a failed deploy prunes nothing. Every container's log is capped at three
 10 MB files (`x-logging` in both compose files). The repository is public and so are its Actions logs:
