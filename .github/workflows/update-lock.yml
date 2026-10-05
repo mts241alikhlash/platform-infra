@@ -32,8 +32,8 @@ jobs:
         const model = await loadInputs({ rootDir: '.', environment: process.env.TARGET })
         process.stdout.write(renderConfig(model, { ssl: false }) + renderConfig(model, { ssl: true }))
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24.21.0
       - run: node scripts/update-lock.test.mjs
