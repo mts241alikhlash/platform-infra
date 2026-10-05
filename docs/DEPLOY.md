@@ -155,6 +155,13 @@ in every repository, Release skips publishing a version whose tag already
 exists (`<package>@<version>`; in `services`, per service image), so a commit
 without a version bump rebuilds nothing.
 
+Setting the repository variable `STAGING_PARKED` to `true` (Settings →
+Secrets and variables → Actions → Variables) parks staging: the plan drops
+staging from every push and dispatch, so a stopped staging stack is never
+started by a lock change, and production still deploys. Delete the variable to
+deploy staging again. The two environments deploy one after the other, and a
+failure in one does not cancel the other.
+
 New releases reach the locks through `.github/workflows/update-lock.yml`.
 Every hour it compares the staging lock with the newest released app, service
 and gateway versions (public git tags, GitHub Release manifests and GHCR, no
