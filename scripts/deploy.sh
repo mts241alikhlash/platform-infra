@@ -45,7 +45,7 @@ env, *services = sys.argv[1:]
 lock = json.load(open(f"deployment/{env}.lock.json"))
 routes = {}
 for app, pin in sorted(lock["apps"].items()):
-    manifest = json.load(open(f"gateway/manifests/{app}.json"))
+    manifest = json.load(open(f"gateway/manifests/{app}-{pin['routesVersion']}.json"))
     for route in manifest["healthRoutes"]:
         routes.setdefault(route["service"], (pin["sslHost"], route["path"]))
 missing = [service for service in services if service not in routes]
