@@ -86,23 +86,23 @@ services:
 
   academic-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/academic-web@sha256:60d4ff6a3201a58d678287ae0cd6783bc6d7a41538446d099f8eadb0f797d3f2
+    image: ghcr.io/mts241alikhlash/academic-web@sha256:4a82af438006068097a10832cdb5147d92867f7b0b1e57d036245c4f2beb68d7
 
   admission-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/admission-web@sha256:30cdb716a70f0a7399361523e48fac1cf84792975827f3942a86012c64c58fb4
+    image: ghcr.io/mts241alikhlash/admission-web@sha256:b3daf18b098022fb2549a13794ce07beb57cd99d17aa268eedfb893e37978b46
 
   admin-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/admin-web@sha256:8e9cd6b298653a575d2be6a4eddb1a2788d31ed861e09df7cd4abf458251ef94
+    image: ghcr.io/mts241alikhlash/admin-web@sha256:b249f11b5623b45dd436032d28d5ff41daaabb181f267591a88ebe4463463d57
 
   assessment-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/assessment-web@sha256:1099777360397aa88efe89cdfda8cd7db846cd9c4952226f7ab1ce4597ef44c5
+    image: ghcr.io/mts241alikhlash/assessment-web@sha256:af9c17d328cf3c8bedf1c3e685fd02fa9a12bf1aa1287c8dec739fb69141fcad
 
   hr-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/hr-web@sha256:45fe031f983277a7e354082252b052e5383febc359f00651d9d47cfac2cc9091
+    image: ghcr.io/mts241alikhlash/hr-web@sha256:1b77b695dcec99d1c29f00c04e458d93b041bc255f3aca29187ff88dc91245bd
 
   account-web:
     <<: *web-defaults
@@ -110,11 +110,11 @@ services:
 
   inventory-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/inventory-web@sha256:728e6aafe772b0e4ca13dfc715fa82846c30f1b5fdde0f27c5dc16c487661930
+    image: ghcr.io/mts241alikhlash/inventory-web@sha256:de7627cc0f18cf3c7343ea6d1cb198d3590bb532c6a463e38a770b51bfe1a2d5
 
   portal-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/portal-web@sha256:fae211a3cbd2dd7ac63a3e917edc7655706aa7942d2009ed38deea51786b64b3
+    image: ghcr.io/mts241alikhlash/portal-web@sha256:c9cbccbe7cbe0601d101b30619803b983f688aeb5895b529f176eaa34e5ab367
 
   identity-service:
     <<: *service-defaults
