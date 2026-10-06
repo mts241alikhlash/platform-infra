@@ -65,7 +65,7 @@ PY
 address="$(dc port gateway 80)"
 while read -r host path; do
   echo "==> health $host$path"
-  curl -fsS -m 10 -o /dev/null -H "Host: $host" "http://$address$path"
+  curl -fsS -m 10 --retry 6 --retry-delay 5 --retry-all-errors -o /dev/null -H "Host: $host" "http://$address$path"
 done <<< "$checks"
 
 echo "==> remove platform images no container uses"
