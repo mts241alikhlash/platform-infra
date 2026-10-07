@@ -109,7 +109,7 @@ The migrations also fill every default list (administrative areas, religions,
 blood types, occupations, educations, the PPDB option lists, document types,
 employment types, positions, inventory categories, conditions and funding
 sources, leave types, portal categories, homepage sections and menu).
-`seed-permissions.ts` creates the twenty-five default roles. Run it again after
+`seed-permissions.ts` creates the twenty-six default roles. Run it again after
 every later release's migrations.
 
 `seed:reference-data` in academic-service needs an active academic year:
