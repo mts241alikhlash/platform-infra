@@ -708,8 +708,9 @@ SEED_ADMIN_PASSWORD=<12+ chars> pnpm seed:admin-minimal   # admin, SUPER_ADMIN w
 ```
 
 `seed:permissions` runs after every release: it adds the new codes to the
-catalogue, grants them to `SUPER_ADMIN`, and creates each default role that is
-missing. It creates the default roles once and never resets them, so an
+catalogue, grants them to `SUPER_ADMIN` and to the existing default roles whose
+definition includes them (only in the run that creates the code), and creates each
+default role that is missing. It creates the default roles once and never resets them, so an
 administrator's edits to a role survive. `seed:admin-minimal` calls the same sync, so a box seeded
 with it alone still has a `SUPER_ADMIN` that can open every app.
 
