@@ -90,7 +90,7 @@ services:
 
   admission-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/admission-web@sha256:ecb4b91b37d91d958de6593b6eed238cabbe156cc3bab893a63660a8b03a1c63
+    image: ghcr.io/mts241alikhlash/admission-web@sha256:ab322d14028676b11b0949295518d19b705036f26334285bf44d7a9adcc000a8
 
   admin-web:
     <<: *web-defaults
