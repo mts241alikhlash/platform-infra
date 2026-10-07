@@ -118,7 +118,7 @@ services:
 
   identity-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:aa6b2198a832f282070f58c84dccf608b951f570b65b76bbe90e6a171d76828c
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:9ac1d3b3300eafb96679b41634d50a94831dffc6640e1efd60b6c9d8beb6f6e2
     env_file:
       - path: env/identity-service.env
         required: false
@@ -253,7 +253,7 @@ services:
 
   identity-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:aa6b2198a832f282070f58c84dccf608b951f570b65b76bbe90e6a171d76828c
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:9ac1d3b3300eafb96679b41634d50a94831dffc6640e1efd60b6c9d8beb6f6e2
     profiles: ["migrate"]
     env_file:
       - path: env/identity-service.env
