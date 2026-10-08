@@ -34,10 +34,10 @@
       "host": "ppdb.localhost",
       "sslHost": "admission.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/admission",
-      "webVersion": "1.9.0",
-      "webImage": "ghcr.io/mts241alikhlash/admission-web@sha256:2bc27e804deb9c3003c30b59275f92dd2f241ab98fcb04e89c2ccc864c01ae03",
-      "routesVersion": "1.9.0",
-      "routesSha256": "cbbce976633098fbf97018c61a2ca0829aff35a483b237e4c1c7466abac4229a"
+      "webVersion": "1.10.0",
+      "webImage": "ghcr.io/mts241alikhlash/admission-web@sha256:5704b0f6c6e166d66315882faaa294c5c0bf9b73f2c9b7dd8e200b5fe7ab1ecb",
+      "routesVersion": "1.10.0",
+      "routesSha256": "a19134a783f0342a8ec2b509e895050438c225cd450b9c0da78d2335c773d4b7"
     },
     "assessment": {
       "host": "assessment.localhost",
