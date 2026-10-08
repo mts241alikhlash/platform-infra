@@ -7,79 +7,79 @@
       "host": "_",
       "sslHost": "academic.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/academic",
-      "webVersion": "1.3.0",
-      "webImage": "ghcr.io/mts241alikhlash/academic-web@sha256:4a82af438006068097a10832cdb5147d92867f7b0b1e57d036245c4f2beb68d7",
-      "routesVersion": "1.3.0",
-      "routesSha256": "fa8d1efc30f208ff958829182d013663275bd563b7a73ac2ff4b4991bf3ad289"
+      "webVersion": "1.4.0",
+      "webImage": "ghcr.io/mts241alikhlash/academic-web@sha256:4a320446f683ca830061305da7289b4fea9e856f1b6bcbe8f6c2e4172696886c",
+      "routesVersion": "1.4.0",
+      "routesSha256": "92d471341fd7648904fe52e1f252f04843e2ba11f483573291396eff971867b1"
     },
     "account": {
       "host": "accounts.localhost",
       "sslHost": "accounts.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/account",
-      "webVersion": "1.1.0",
-      "webImage": "ghcr.io/mts241alikhlash/account-web@sha256:6af626e0efc0ada814e2efb5472f21f356879398fd490f4a2f08bc51200354bd",
-      "routesVersion": "1.1.0",
-      "routesSha256": "ff64678ded3f8c51761b47d2872f0bc1461156de3cc5ac5fd3e5c25a5587be0a"
+      "webVersion": "1.2.0",
+      "webImage": "ghcr.io/mts241alikhlash/account-web@sha256:92898c08b4dacdabb516af75d2305f66fc4eeae3eacf577c0abb3b5de5c7c3e2",
+      "routesVersion": "1.2.0",
+      "routesSha256": "68b6b88b11c398b4d076db7db135cb013500876993bab20276c5c5ffe8d5a6be"
     },
     "admin": {
       "host": "admin.localhost",
       "sslHost": "admin.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/admin",
-      "webVersion": "1.3.0",
-      "webImage": "ghcr.io/mts241alikhlash/admin-web@sha256:b249f11b5623b45dd436032d28d5ff41daaabb181f267591a88ebe4463463d57",
-      "routesVersion": "1.3.0",
-      "routesSha256": "9f12367e477bc50df1a85294e777e0fedac6a04179567cde4c73c3a8cc11e254"
+      "webVersion": "1.4.0",
+      "webImage": "ghcr.io/mts241alikhlash/admin-web@sha256:cc1b3fd3ecade4bb63f5e34c646a8b7adf9caf503676e6f4b3d866155be55bf5",
+      "routesVersion": "1.4.0",
+      "routesSha256": "e300991dc33cc6d5eb95a1b8ac4962a9c34a351fb98eb26e0a8b6a27880f3386"
     },
     "admission": {
       "host": "ppdb.localhost",
       "sslHost": "admission.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/admission",
-      "webVersion": "1.11.0",
-      "webImage": "ghcr.io/mts241alikhlash/admission-web@sha256:d29595985c895f7c4b3315d3a25b9bd247499888ba3660d934eed6cd7dcf3570",
-      "routesVersion": "1.11.0",
-      "routesSha256": "f4dc908e23d5eb2ecf009376c72dd42f691f61e41c25a9651cc744d548f0be29"
+      "webVersion": "1.12.0",
+      "webImage": "ghcr.io/mts241alikhlash/admission-web@sha256:74d90f1f98dfb695d96953af6242073ef48c222f5df3de27954c057f61684afa",
+      "routesVersion": "1.12.0",
+      "routesSha256": "2e8878341f32204f0d720b844b5f311aee46866273e94cea302a8232acc01c12"
     },
     "assessment": {
       "host": "assessment.localhost",
       "sslHost": "assessment.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/assessment",
-      "webVersion": "1.3.0",
-      "webImage": "ghcr.io/mts241alikhlash/assessment-web@sha256:af9c17d328cf3c8bedf1c3e685fd02fa9a12bf1aa1287c8dec739fb69141fcad",
-      "routesVersion": "1.3.0",
-      "routesSha256": "beead21cf9401e358cfc96861d71b8b78e3dcbb0bdfb31cc5681c13b651d8d3c"
+      "webVersion": "1.4.0",
+      "webImage": "ghcr.io/mts241alikhlash/assessment-web@sha256:e63e30ca0ed736653a6c5402bad6a3f0c4f16fcc345d4ab2150f76444ac67d8c",
+      "routesVersion": "1.4.0",
+      "routesSha256": "6c09fa76cab94c88578aa4696c5be0ae00625c336120fc4db7403903a6e36061"
     },
     "hr": {
       "host": "hr.localhost",
       "sslHost": "hr.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/hr",
-      "webVersion": "1.3.0",
-      "webImage": "ghcr.io/mts241alikhlash/hr-web@sha256:1b77b695dcec99d1c29f00c04e458d93b041bc255f3aca29187ff88dc91245bd",
-      "routesVersion": "1.3.0",
-      "routesSha256": "eb6167e46cae78b87fe177bd76209c5c5909a5b69aaa4a14de26557a5ad9f368"
+      "webVersion": "1.4.0",
+      "webImage": "ghcr.io/mts241alikhlash/hr-web@sha256:fc7728a319999ec4ce1a4a5b759a65e4c9f30720c43f8db9edbab626c46c667f",
+      "routesVersion": "1.4.0",
+      "routesSha256": "c5ff75bd505f756f2973cf68b9c4b45d88fffdcfbe55dfdcad996c1e05314f63"
     },
     "inventory": {
       "host": "simas.localhost",
       "sslHost": "inventory.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/inventory",
-      "webVersion": "1.3.0",
-      "webImage": "ghcr.io/mts241alikhlash/inventory-web@sha256:de7627cc0f18cf3c7343ea6d1cb198d3590bb532c6a463e38a770b51bfe1a2d5",
-      "routesVersion": "1.3.0",
-      "routesSha256": "7be3e9947dd2bf4dd9d8d4839bd39bae28f7e361305277bbcfcb466f9c06dd67"
+      "webVersion": "1.4.0",
+      "webImage": "ghcr.io/mts241alikhlash/inventory-web@sha256:44cbdb918426e64ad065a9406848ba4d0df180b50dce867ec9aa79472b538067",
+      "routesVersion": "1.4.0",
+      "routesSha256": "ed0f9cd0751e78072f3165f81bf0cbd76bb7b82e89147d23357578d432a10a91"
     },
     "portal": {
       "host": "portal.localhost",
       "sslHost": "portal.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/portal",
-      "webVersion": "1.3.0",
-      "webImage": "ghcr.io/mts241alikhlash/portal-web@sha256:c9cbccbe7cbe0601d101b30619803b983f688aeb5895b529f176eaa34e5ab367",
-      "routesVersion": "1.3.0",
-      "routesSha256": "cf7dabaae9d7c3e5ea1eb49c989c39d8654b22b637aae8a7b69fdfe5dcaa6e34"
+      "webVersion": "1.4.0",
+      "webImage": "ghcr.io/mts241alikhlash/portal-web@sha256:bf5808db0a4e09b54d8744c9b3de5cf64e6764d5b2fe7f1383d873e93d2ffbfe",
+      "routesVersion": "1.4.0",
+      "routesSha256": "959f06904b2bbe1d2f03f7f8109ecd79b8f34dc1de6e5175b4e061fe68171664"
     }
   },
   "services": {
     "identity": {
-      "version": "1.7.0",
-      "image": "ghcr.io/mts241alikhlash/identity-service@sha256:9a74694c0dd6cf7e643fb7b6f9d976ef19c827e08fc8fc365b0b564f05f10b97",
+      "version": "1.8.0",
+      "image": "ghcr.io/mts241alikhlash/identity-service@sha256:cb8e29a32e4a552fb5f1bddc21a67a8163492f355f0ebed95ad33b1548d6bbc1",
       "upstream": "identity-service:3000",
       "healthPath": "/health"
     },
@@ -114,8 +114,8 @@
       "healthPath": "/health"
     },
     "hr": {
-      "version": "1.0.0",
-      "image": "ghcr.io/mts241alikhlash/hr-service@sha256:a607847a3ee5dbcd3f9944de32f25f5be112f12373d42e6ee423c21a0a3f366c",
+      "version": "1.0.1",
+      "image": "ghcr.io/mts241alikhlash/hr-service@sha256:02932a921ff7a29bb9cfafd851ed8ef7550933b7f45148f57cbc5d02edba7312",
       "upstream": "hr-service:3800",
       "healthPath": "/health"
     },
