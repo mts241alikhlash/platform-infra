@@ -86,39 +86,39 @@ services:
 
   academic-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/academic-web@sha256:4a82af438006068097a10832cdb5147d92867f7b0b1e57d036245c4f2beb68d7
+    image: ghcr.io/mts241alikhlash/academic-web@sha256:4a320446f683ca830061305da7289b4fea9e856f1b6bcbe8f6c2e4172696886c
 
   admission-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/admission-web@sha256:d29595985c895f7c4b3315d3a25b9bd247499888ba3660d934eed6cd7dcf3570
+    image: ghcr.io/mts241alikhlash/admission-web@sha256:74d90f1f98dfb695d96953af6242073ef48c222f5df3de27954c057f61684afa
 
   admin-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/admin-web@sha256:b249f11b5623b45dd436032d28d5ff41daaabb181f267591a88ebe4463463d57
+    image: ghcr.io/mts241alikhlash/admin-web@sha256:cc1b3fd3ecade4bb63f5e34c646a8b7adf9caf503676e6f4b3d866155be55bf5
 
   assessment-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/assessment-web@sha256:af9c17d328cf3c8bedf1c3e685fd02fa9a12bf1aa1287c8dec739fb69141fcad
+    image: ghcr.io/mts241alikhlash/assessment-web@sha256:e63e30ca0ed736653a6c5402bad6a3f0c4f16fcc345d4ab2150f76444ac67d8c
 
   hr-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/hr-web@sha256:1b77b695dcec99d1c29f00c04e458d93b041bc255f3aca29187ff88dc91245bd
+    image: ghcr.io/mts241alikhlash/hr-web@sha256:fc7728a319999ec4ce1a4a5b759a65e4c9f30720c43f8db9edbab626c46c667f
 
   account-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/account-web@sha256:6af626e0efc0ada814e2efb5472f21f356879398fd490f4a2f08bc51200354bd
+    image: ghcr.io/mts241alikhlash/account-web@sha256:92898c08b4dacdabb516af75d2305f66fc4eeae3eacf577c0abb3b5de5c7c3e2
 
   inventory-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/inventory-web@sha256:de7627cc0f18cf3c7343ea6d1cb198d3590bb532c6a463e38a770b51bfe1a2d5
+    image: ghcr.io/mts241alikhlash/inventory-web@sha256:44cbdb918426e64ad065a9406848ba4d0df180b50dce867ec9aa79472b538067
 
   portal-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/portal-web@sha256:c9cbccbe7cbe0601d101b30619803b983f688aeb5895b529f176eaa34e5ab367
+    image: ghcr.io/mts241alikhlash/portal-web@sha256:bf5808db0a4e09b54d8744c9b3de5cf64e6764d5b2fe7f1383d873e93d2ffbfe
 
   identity-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:9a74694c0dd6cf7e643fb7b6f9d976ef19c827e08fc8fc365b0b564f05f10b97
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:cb8e29a32e4a552fb5f1bddc21a67a8163492f355f0ebed95ad33b1548d6bbc1
     env_file:
       - path: env/identity-service.env
         required: false
@@ -208,7 +208,7 @@ services:
 
   hr-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/hr-service@sha256:a607847a3ee5dbcd3f9944de32f25f5be112f12373d42e6ee423c21a0a3f366c
+    image: ghcr.io/mts241alikhlash/hr-service@sha256:02932a921ff7a29bb9cfafd851ed8ef7550933b7f45148f57cbc5d02edba7312
     env_file:
       - path: env/hr-service.env
         required: false
@@ -253,7 +253,7 @@ services:
 
   identity-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:9a74694c0dd6cf7e643fb7b6f9d976ef19c827e08fc8fc365b0b564f05f10b97
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:cb8e29a32e4a552fb5f1bddc21a67a8163492f355f0ebed95ad33b1548d6bbc1
     profiles: ["migrate"]
     env_file:
       - path: env/identity-service.env
@@ -301,7 +301,7 @@ services:
 
   hr-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/hr-service@sha256:a607847a3ee5dbcd3f9944de32f25f5be112f12373d42e6ee423c21a0a3f366c
+    image: ghcr.io/mts241alikhlash/hr-service@sha256:02932a921ff7a29bb9cfafd851ed8ef7550933b7f45148f57cbc5d02edba7312
     profiles: ["migrate"]
     env_file:
       - path: env/hr-service.env
