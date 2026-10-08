@@ -78,8 +78,8 @@
   },
   "services": {
     "identity": {
-      "version": "1.5.0",
-      "image": "ghcr.io/mts241alikhlash/identity-service@sha256:1c9538660011efd010f262fb2a2185c40426889b035e775c0ff70326904b65c6",
+      "version": "1.6.0",
+      "image": "ghcr.io/mts241alikhlash/identity-service@sha256:ad042e5cbb37b818b9b913bce1f7ae7327df882c95bbe2835c1128fd32c59b05",
       "upstream": "identity-service:3000",
       "healthPath": "/health"
     },
@@ -108,8 +108,8 @@
       "healthPath": "/health"
     },
     "admission": {
-      "version": "2.4.0",
-      "image": "ghcr.io/mts241alikhlash/admission-service@sha256:92389a4d192f4337516649fcce93aa27561cf77de8fad50321a7251ffd1bb75b",
+      "version": "2.5.0",
+      "image": "ghcr.io/mts241alikhlash/admission-service@sha256:296d2baf16c61da18c5ff18c91916c7862c03f82768247c4327a964bda48a5e7",
       "upstream": "admission-service:3700",
       "healthPath": "/health"
     },
