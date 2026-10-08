@@ -118,7 +118,7 @@ services:
 
   identity-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:ad042e5cbb37b818b9b913bce1f7ae7327df882c95bbe2835c1128fd32c59b05
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:9a74694c0dd6cf7e643fb7b6f9d976ef19c827e08fc8fc365b0b564f05f10b97
     env_file:
       - path: env/identity-service.env
         required: false
@@ -133,7 +133,7 @@ services:
 
   academic-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/academic-service@sha256:cec6ba1276103c3a89a288d244ada21aec6c83b8da48a89db16733931b4e0360
+    image: ghcr.io/mts241alikhlash/academic-service@sha256:0cb9d0dd86fdcf478204893e2dbe158d9e18763749c066b230d1b72c01765304
     env_file:
       - path: env/academic-service.env
         required: false
@@ -193,7 +193,7 @@ services:
 
   admission-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/admission-service@sha256:296d2baf16c61da18c5ff18c91916c7862c03f82768247c4327a964bda48a5e7
+    image: ghcr.io/mts241alikhlash/admission-service@sha256:5f08741c04ceafa041bb33173358e1e8357d7376bf0003393a26b426440f682f
     env_file:
       - path: env/admission-service.env
         required: false
@@ -253,7 +253,7 @@ services:
 
   identity-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:ad042e5cbb37b818b9b913bce1f7ae7327df882c95bbe2835c1128fd32c59b05
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:9a74694c0dd6cf7e643fb7b6f9d976ef19c827e08fc8fc365b0b564f05f10b97
     profiles: ["migrate"]
     env_file:
       - path: env/identity-service.env
@@ -261,7 +261,7 @@ services:
 
   academic-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/academic-service@sha256:cec6ba1276103c3a89a288d244ada21aec6c83b8da48a89db16733931b4e0360
+    image: ghcr.io/mts241alikhlash/academic-service@sha256:0cb9d0dd86fdcf478204893e2dbe158d9e18763749c066b230d1b72c01765304
     profiles: ["migrate"]
     env_file:
       - path: env/academic-service.env
@@ -293,7 +293,7 @@ services:
 
   admission-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/admission-service@sha256:296d2baf16c61da18c5ff18c91916c7862c03f82768247c4327a964bda48a5e7
+    image: ghcr.io/mts241alikhlash/admission-service@sha256:5f08741c04ceafa041bb33173358e1e8357d7376bf0003393a26b426440f682f
     profiles: ["migrate"]
     env_file:
       - path: env/admission-service.env
