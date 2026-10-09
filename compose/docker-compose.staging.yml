@@ -90,7 +90,7 @@ services:
 
   admission-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/admission-web@sha256:fef5783026439e41c3c3c74198f594bd345e60dafaab046f3ae1c3d4d5d3cc3e
+    image: ghcr.io/mts241alikhlash/admission-web@sha256:46df086c7bcc9919abb54810398fa4256d10a2c69b15f476266f0ab0cc7a26b0
 
   admin-web:
     <<: *web-defaults
@@ -118,7 +118,7 @@ services:
 
   identity-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:e9a14e2280f0c6cbfc5b37e9c78dbff3ac36fa277bec611fd993634fae66a1bc
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:91dcb65ad062908479ed682b03147911a251fa1a6af8641e14274135306d17cf
     env_file:
       - path: env/identity-service.env
         required: false
@@ -193,7 +193,7 @@ services:
 
   admission-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/admission-service@sha256:8f5d7b26fbc1952ec08486c6f186b9d3e532bbcea9a018bfbea134630d9de7f7
+    image: ghcr.io/mts241alikhlash/admission-service@sha256:777633e826eb30f1c92b51f0fb6b52da0cc9c860039353081dc533080be8075d
     env_file:
       - path: env/admission-service.env
         required: false
@@ -253,7 +253,7 @@ services:
 
   identity-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:e9a14e2280f0c6cbfc5b37e9c78dbff3ac36fa277bec611fd993634fae66a1bc
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:91dcb65ad062908479ed682b03147911a251fa1a6af8641e14274135306d17cf
     profiles: ["migrate"]
     env_file:
       - path: env/identity-service.env
@@ -293,7 +293,7 @@ services:
 
   admission-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/admission-service@sha256:8f5d7b26fbc1952ec08486c6f186b9d3e532bbcea9a018bfbea134630d9de7f7
+    image: ghcr.io/mts241alikhlash/admission-service@sha256:777633e826eb30f1c92b51f0fb6b52da0cc9c860039353081dc533080be8075d
     profiles: ["migrate"]
     env_file:
       - path: env/admission-service.env
