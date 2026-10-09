@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "app": "account",
+  "webVersion": "1.2.1",
+  "servicePrefixes": {
+    "identity": [
+      "/auth",
+      "/sso",
+      "/profiles",
+      "/religions",
+      "/blood-types",
+      "/regions"
+    ]
+  },
+  "unroutedPrefixes": [],
+  "healthRoutes": [
+    {
+      "path": "/health/identity",
+      "service": "identity"
+    }
+  ]
+}

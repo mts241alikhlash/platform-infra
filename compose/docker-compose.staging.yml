@@ -106,7 +106,7 @@ services:
 
   account-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/account-web@sha256:92898c08b4dacdabb516af75d2305f66fc4eeae3eacf577c0abb3b5de5c7c3e2
+    image: ghcr.io/mts241alikhlash/account-web@sha256:d48553846209d6c403d811e08f8f6ec86aaaf20c83ad5c962065b13cea84a21c
 
   inventory-web:
     <<: *web-defaults

@@ -16,10 +16,10 @@
       "host": "accounts.localhost",
       "sslHost": "dev-accounts.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/account",
-      "webVersion": "1.2.0",
-      "webImage": "ghcr.io/mts241alikhlash/account-web@sha256:92898c08b4dacdabb516af75d2305f66fc4eeae3eacf577c0abb3b5de5c7c3e2",
-      "routesVersion": "1.2.0",
-      "routesSha256": "68b6b88b11c398b4d076db7db135cb013500876993bab20276c5c5ffe8d5a6be"
+      "webVersion": "1.2.1",
+      "webImage": "ghcr.io/mts241alikhlash/account-web@sha256:d48553846209d6c403d811e08f8f6ec86aaaf20c83ad5c962065b13cea84a21c",
+      "routesVersion": "1.2.1",
+      "routesSha256": "d2e8e601fbf5c169e40df38d37a22a352e0ad6193300fd27205f3df9feed00d1"
     },
     "admin": {
       "host": "admin.localhost",
