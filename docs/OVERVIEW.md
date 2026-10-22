@@ -1491,7 +1491,7 @@ Collected on 2026-10-04 before the first deployment.
   `NODE_OPTIONS=--max-old-space-size=256` (staging and production compose).
   Add 2 GB of swap on the VPS, then check with `free -m` and
   `docker stats --no-stream` whether 320m is enough.
-- **Base images** are pinned to `node:24.21.0-alpine` and
+- **Base images** are pinned to `node:24.22.1-alpine` and
   `nginx:1.30.5-alpine` (`nginx-unprivileged` for the web apps). Bump them on
   each Node 24 or nginx stable patch.
 - **Throttling** keeps its counters in each process's memory, so limits reset on

@@ -24,7 +24,7 @@ jobs:
           version: 11.25.0
       - uses: actions/setup-node@v7
         with:
-          node-version: 24.21.0
+          node-version: 24.22.1
           cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - uses: changesets/action/select-mode@v2
@@ -55,7 +55,7 @@ jobs:
           version: 11.25.0
       - uses: actions/setup-node@v7
         with:
-          node-version: 24.21.0
+          node-version: 24.22.1
           cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - uses: changesets/action/version@v2
@@ -79,7 +79,7 @@ jobs:
           version: 11.25.0
       - uses: actions/setup-node@v7
         with:
-          node-version: 24.21.0
+          node-version: 24.22.1
           cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Read gateway version
