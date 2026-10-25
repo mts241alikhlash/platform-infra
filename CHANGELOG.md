@@ -1,5 +1,11 @@
 # 241-platform-infra
 
+## 1.1.1
+
+### Patch Changes
+
+- 72a0935: Rebuild the gateway for the staging routes.
+
 ## 1.1.0
 
 ### Minor Changes
