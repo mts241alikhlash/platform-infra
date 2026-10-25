@@ -41,7 +41,7 @@ x-migrate-defaults: &migrate-defaults
 services:
   gateway:
     logging: *logging
-    image: ghcr.io/mts241alikhlash/platform-gateway@sha256:3961adc5a460d0f95f1651cb32f48180836b93411f5e4fe855e0ee4905b07783
+    image: ghcr.io/mts241alikhlash/platform-gateway@sha256:9f7d39c27dfe2040ab7f15a978dce09cee0fc64c955ed1d9d5d213f939bc9308
     restart: unless-stopped
     ports:
       - "80:80"
@@ -100,7 +100,7 @@ services:
 
   assessment-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/assessment-web@sha256:4e692a1db62baa7ba5672fefe67766bd6a560b078e2df5219f1a308775fddeb4
+    image: ghcr.io/mts241alikhlash/assessment-web@sha256:c38603c967f70828ce9e7a2e0ec9012742a4e75a9a99a62cc66871b6b2b8e16d
 
   hr-web:
     <<: *web-defaults
@@ -120,7 +120,7 @@ services:
 
   identity-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:23c74affed16aff299ccca941b23ffe888e7fa0858f8ba9af0b5de49e91c2d52
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:6a860f53d75d1f91bb4b4a15fa7932aa530ad3e7ea07b7a0e7280a329fc63e29
     env_file:
       - path: env/identity-service.env
         required: false
@@ -270,7 +270,7 @@ services:
 
   identity-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:23c74affed16aff299ccca941b23ffe888e7fa0858f8ba9af0b5de49e91c2d52
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:6a860f53d75d1f91bb4b4a15fa7932aa530ad3e7ea07b7a0e7280a329fc63e29
     profiles: ["migrate"]
     env_file:
       - path: env/identity-service.env
