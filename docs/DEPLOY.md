@@ -49,7 +49,7 @@ is done by a person. Once it is done, later deploys run on their own (section 6)
 
 - [ ] PostgreSQL 13 or later (`gen_random_uuid()` in the migrations); one
       database per service: `identity`, `academic`, `admission`, `hr`,
-      `inventory`, `presence`, `portal`, `student`, `assessment`.
+      `inventory`, `presence`, `portal`, `student`, `assessment`, `exam`.
 - [ ] `docker network create mts241alikhlash-net`.
 - [ ] 2 GB of swap (`free -m`); each NestJS service is capped at 320m.
 - [ ] Cloudflare, in the dashboard:
@@ -96,7 +96,7 @@ given, so every command names it:
 cd platform-infra
 dc() { docker compose -f compose/docker-compose.staging.yml -f compose/docker-compose.override.yml "$@"; }
 dc --profile migrate pull
-for s in identity academic admission hr inventory presence portal student assessment; do
+for s in identity academic admission hr inventory presence portal student assessment exam; do
   dc --profile migrate run --rm "$s-service-migrate" || break
 done
 seed() { dc run --rm --entrypoint ./node_modules/.bin/tsx "$@"; }

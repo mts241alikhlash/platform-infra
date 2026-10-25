@@ -7,5 +7,6 @@
   "admission": { "host": "admission-service", "port": 3700, "healthPath": "/health" },
   "hr": { "host": "hr-service", "port": 3800, "healthPath": "/health" },
   "student": { "host": "student-service", "port": 3900, "healthPath": "/health" },
-  "assessment": { "host": "assessment-service", "port": 4000, "healthPath": "/health" }
+  "assessment": { "host": "assessment-service", "port": 4000, "healthPath": "/health" },
+  "exam": { "host": "exam-service", "port": 4100, "healthPath": "/health" }
 }

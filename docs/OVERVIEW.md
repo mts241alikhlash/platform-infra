@@ -1,6 +1,6 @@
 # 241 Apps
 
-The nine services and seven apps that make up 241. This file lives in
+The ten services and seven apps that make up 241. This file lives in
 `platform-infra`, and it is the workspace-wide picture.
 
 **The workspace folder is not a git repository.** Since 2026-09-15 it holds
@@ -8,7 +8,7 @@ separate repositories, each with its own remote:
 
 | Repository | Holds |
 | --- | --- |
-| `services` | all nine NestJS services, one pnpm workspace, plus the generated `packages/*-api` clients and `contracts/` |
+| `services` | all ten NestJS services, one pnpm workspace, plus the generated `packages/*-api` clients and `contracts/` |
 | `academic-web`, `admin-web`, `admission-web`, `assessment-web`, `hr-web`, `inventory-web`, `portal-web` | one Vue app each |
 | `web-packages` | `@mts241alikhlash/ui` and `@mts241alikhlash/web-shared`, published to GitHub Packages |
 | `platform-infra` | the gateway, the Compose stacks, the deployment locks, and this file |
@@ -33,7 +33,7 @@ their paths through this table; the rules they state still hold.
 | `scripts/release.mjs`, `VERSIONING.md` | Changesets, per repository — see "Versioning and releases" |
 | `.github/scripts/changed-folders.mjs` | one `validate.yml` per repository — see "CI" |
 
-## The nine services
+## The ten services
 
 The product names were settled on 2026-09-10. The old acronyms — SIAKAD,
 SIMAS, SIPRES, PSB — are gone from every `appTitle`, page title and sidebar
@@ -51,9 +51,10 @@ names it.
 | `hr-service` | 241 HR | employee records, positions, employment types, **and payroll** | 3800 | `hr_service`, 10 models |
 | `student-service` | 241 Academic | student lifecycle: students, parents, enrolment, graduation, promotion | 3900 | `student_service`, 6 models |
 | `assessment-service` | 241 Academic | teaching evaluation: assessment, attendance, report cards, dashboard | 4000 | `assessment_service`, 6 models |
+| `exam-service` | 241 Academic | computer-based exams: question bank with versions, approval, import (phase 1) | 4100 | `exam_service`, 4 models |
 
 **Every service has its own database, its own `.env`, and its own
-`prisma:migrate` / `prisma:deploy`.** All nine point at the shared VPS Postgres
+`prisma:migrate` / `prisma:deploy`.** All ten point at the shared VPS Postgres
 on `postgres:5432`; `gateway-source/postgres/init-databases.sql` creates eight of them
 and `identity_service` is the server's `POSTGRES_DB`.
 

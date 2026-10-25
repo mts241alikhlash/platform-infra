@@ -16,6 +16,7 @@ compose/env/admission-service.env
 compose/env/hr-service.env
 compose/env/student-service.env
 compose/env/assessment-service.env
+compose/env/exam-service.env
 ```
 
 The 8 web apps don't get a file — they're static builds, nothing reads a
