@@ -2,7 +2,7 @@
 set -euo pipefail
 
 env="${1:?usage: scripts/deploy.sh <staging|production>}"
-services=(identity academic admission hr inventory presence portal student assessment)
+services=(identity academic admission hr inventory presence portal student assessment exam)
 
 dc() {
   docker compose -f "compose/docker-compose.$env.yml" -f compose/docker-compose.override.yml "$@"

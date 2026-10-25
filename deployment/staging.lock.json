@@ -130,6 +130,12 @@
       "image": "ghcr.io/mts241alikhlash/assessment-service@sha256:2a2c3e7ef0b36b28dbced0bb16ebc0a9d1f0a0f0db2e6831205f9bda2d701702",
       "upstream": "assessment-service:4000",
       "healthPath": "/health"
+    },
+    "exam": {
+      "version": "0.2.0",
+      "image": "ghcr.io/mts241alikhlash/exam-service@sha256:c28c5d6571e902c413ee13c71de4f628917ee3f0ae03544195e9dcb5678a4ba6",
+      "upstream": "exam-service:4100",
+      "healthPath": "/health"
     }
   }
 }

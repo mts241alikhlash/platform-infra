@@ -21,7 +21,7 @@ const APPS = [
 const SERVICES = [
   'identity-service', 'academic-service', 'inventory-service',
   'presence-service', 'portal-service', 'admission-service',
-  'hr-service', 'student-service', 'assessment-service',
+  'hr-service', 'student-service', 'assessment-service', 'exam-service',
 ]
 const COMPONENTS = [...APPS, ...SERVICES]
 
