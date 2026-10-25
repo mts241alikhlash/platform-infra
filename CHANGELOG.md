@@ -1,5 +1,11 @@
 # 241-platform-infra
 
+## 1.1.2
+
+### Patch Changes
+
+- c50e669: Rebuild the gateway for the production routes.
+
 ## 1.1.1
 
 ### Patch Changes
