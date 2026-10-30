@@ -9,13 +9,18 @@ about 12 Mbps sustained through one host in both directions.
 
 | Port | Protocol | Who | Why |
 | --- | --- | --- | --- |
-| 1936 | RTMPS | the exam app | TLS, so a home router or CGNAT has nothing to block |
+| 8889 | HTTP/WHIP | the exam app | publishes the camera; TLS is terminated by the reverse proxy in front |
+| 8189 | ICE/UDP | the exam app | WebRTC media path |
 | 8888 | HTTPS/HLS | supervisor page | plays in a `<video>` tag; TLS terminated by MediaMTX itself |
 
-RTMPS rather than WHIP: WHIP only exists in RootEncoder 2.8.x, which needs AGP
-9.3 and Kotlin 2.4.10, while the app builds on AGP 8.9 and Kotlin 2.1.10.
-Upgrading AGP is not part of this feature. The `StreamClient` class is the only
-place that would change.
+WHIP, not RTMP or SRT. Both of those were tried first: the app opened the socket,
+reported `onConnectionSuccess`, and then sent no media, so the server saw a
+connection and then EOF. WHIP publishes over HTTP and works. That required
+RootEncoder 2.8.x, which in turn required Kotlin 2.3.21, AGP 8.13.2, Gradle 8.13
+and Room 2.8.5 — all of that is already in `libs.versions.toml`.
+
+The app publishes 1280×720 at 24 fps, ~1.5 Mbps per student. Thirty students is
+about 45 Mbps upstream; check the school's link before a full class.
 
 ## Authentication
 

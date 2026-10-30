@@ -2,11 +2,13 @@ name: mts241alikhlash-media
 
 # The exam camera media server. It runs on its own small box, not on the API VPS:
 # the production stack already carries 29 images with every service capped at
-# 320m, and 30 concurrent 400 kbps streams is ~12 Mbps sustained through the same
-# host.
+# 320m, and 30 concurrent streams at ~1.5 Mbps is ~45 Mbps sustained through the
+# same host.
 #
-# Publish: RTMPS on 1936 (encrypted, so a home router has nothing to block).
-# Playback: HLS on 8888, served to the supervisor page through the gateway.
+# Publish: WHIP over HTTPS on 8889. RTMP and SRT were tried first and both opened
+# a socket, reported success and sent no media; WHIP is the transport that works.
+# Playback: HLS on 8888, TLS terminated by MediaMTX so the https supervisor page
+# is not blocked as mixed content.
 # Recording is off on every path; nothing is stored.
 
 x-logging: &logging
@@ -21,14 +23,22 @@ services:
     restart: unless-stopped
     logging: *logging
     ports:
-      - "1936:1936"
+      - "8889:8889"
+      - "8189:8189/udp"
       - "8888:8888"
     environment:
-      MTX_RTMP: "yes"
-      MTX_RTMPADDRESS: ":1936"
-      MTX_RTMPENCRYPTION: "strict"
-      MTX_RTMPSERVERCERT: /certs/fullchain.pem
-      MTX_RTMPSERVERKEY: /certs/privkey.pem
+      MTX_RTMP: "no"
+      MTX_SRT: "no"
+      MTX_RTSP: "no"
+
+      MTX_WEBRTC: "yes"
+      MTX_WEBRTCADDRESS: ":8889"
+      # TLS is terminated by the reverse proxy in front of this box; MediaMTX
+      # itself speaks plain HTTP on the private network.
+      MTX_WEBRTCENCRYPTION: "no"
+      MTX_WEBRTCALLOWORIGINS: "*"
+      MTX_WEBRTCLOCALUDPADDRESS: ":8189"
+
       MTX_HLS: "yes"
       MTX_HLSADDRESS: ":8888"
       # HLS is served over TLS by MediaMTX itself. The supervisor page is https,
@@ -41,6 +51,7 @@ services:
       MTX_HLSVARIANT: lowLatency
       MTX_HLSSEGMENTDURATION: 1s
       MTX_HLSALLOWORIGINS: "*"
+
       # 2xx allows, anything else denies. See exam-service StreamAuthController.
       MTX_AUTHHTTPADDRESS: http://exam-service:4100/internal/stream-auth
       MTX_AUTHHTTPEXCLUDE: >-
