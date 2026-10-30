@@ -1,5 +1,12 @@
 # 241-platform-infra
 
+## 1.1.3
+
+### Patch Changes
+
+- a976bdc: Rebuild the gateway for the production routes.
+- 8c2e1e3: Rebuild the gateway for the staging routes.
+
 ## 1.1.2
 
 ### Patch Changes
