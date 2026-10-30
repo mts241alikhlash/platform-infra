@@ -68,12 +68,23 @@ while read -r host path; do
   curl -fsS -m 10 --retry 6 --retry-delay 5 --retry-all-errors -o /dev/null -H "Host: $host" "http://$address$path"
 done <<< "$checks"
 
-echo "==> remove platform images no container uses"
-docker image ls --format '{{.ID}} {{.Repository}}' |
+echo "==> remove unused platform images"
+# Dangling images carry no tag and no container reference, so dropping them is
+# always safe. This is the case that used to leak: a re-pinned digest untags the
+# previous image, and the old awk filter skipped it because .Repository was
+# empty for those rows.
+docker image prune -f > /dev/null 2>&1 || true
+
+# Tagged platform images that no container (running or stopped) references.
+# Other projects on the host keep their images: the awk filter only matches
+# this registry.
+used_images="$(docker ps -aq | xargs -r docker inspect --format '{{.Image}}' 2>/dev/null | sort -u)"
+docker image ls --no-trunc --format '{{.ID}} {{.Repository}}' |
   awk '$2 ~ /^ghcr\.io\/mts241alikhlash\// { print $1 }' |
   sort -u |
   while read -r id; do
-    docker image rm "$id" > /dev/null 2>&1 || true
+    printf '%s\n' "$used_images" | grep -qx "$id" ||
+      docker image rm "$id" > /dev/null 2>&1 || true
   done
 
 echo "==> deployed $(git rev-parse --short HEAD) to $env"
