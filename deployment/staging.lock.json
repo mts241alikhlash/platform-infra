@@ -43,10 +43,10 @@
       "host": "assessment.localhost",
       "sslHost": "dev-assessment.mts241alikhlash.sch.id",
       "root": "/usr/share/nginx/html/assessment",
-      "webVersion": "1.6.0",
-      "webImage": "ghcr.io/mts241alikhlash/assessment-web@sha256:6ad3e648d549a50a981c0015d39bd7fb83591215890eb008499ede0fa8c189a3",
-      "routesVersion": "1.6.0",
-      "routesSha256": "df530cf74de6e901ef78726704416e6bfa4cc89637356c13eaefccb66b45c7e6"
+      "webVersion": "1.7.0",
+      "webImage": "ghcr.io/mts241alikhlash/assessment-web@sha256:eb3fae04e89a26bfcc12629cb21824c916a926e9ea99c15c7b876833f52fe5e6",
+      "routesVersion": "1.7.0",
+      "routesSha256": "0ae134a5c8a1b1519096d9152f8ade9c1a20a35384aa0c340fe56ffc18ba7dc6"
     },
     "hr": {
       "host": "hr.localhost",
