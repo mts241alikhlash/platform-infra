@@ -1,0 +1,66 @@
+name: mts241alikhlash-media
+
+# The exam camera media server. It runs on its own small box, not on the API VPS:
+# the production stack already carries 29 images with every service capped at
+# 320m, and 30 concurrent 400 kbps streams is ~12 Mbps sustained through the same
+# host.
+#
+# Publish: RTMPS on 1936 (encrypted, so a home router has nothing to block).
+# Playback: HLS on 8888, served to the supervisor page through the gateway.
+# Recording is off on every path; nothing is stored.
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: "3"
+
+services:
+  mediamtx:
+    image: bluenviron/mediamtx:1.15.5
+    restart: unless-stopped
+    logging: *logging
+    ports:
+      - "1936:1936"
+      - "8888:8888"
+    environment:
+      MTX_RTMP: "yes"
+      MTX_RTMPADDRESS: ":1936"
+      MTX_RTMPENCRYPTION: "strict"
+      MTX_RTMPSERVERCERT: /certs/fullchain.pem
+      MTX_RTMPSERVERKEY: /certs/privkey.pem
+      MTX_HLS: "yes"
+      MTX_HLSADDRESS: ":8888"
+      # HLS is served over TLS by MediaMTX itself. The supervisor page is https,
+      # so an http playlist would be blocked as mixed content; putting it behind
+      # the gateway would mean a fake app host in the manifest-driven generator.
+      MTX_HLSENCRYPTION: "yes"
+      MTX_HLSSERVERCERT: /certs/fullchain.pem
+      MTX_HLSSERVERKEY: /certs/privkey.pem
+      MTX_HLSALWAYSREMUX: "yes"
+      MTX_HLSVARIANT: lowLatency
+      MTX_HLSSEGMENTDURATION: 1s
+      MTX_HLSALLOWORIGINS: "*"
+      # 2xx allows, anything else denies. See exam-service StreamAuthController.
+      MTX_AUTHHTTPADDRESS: http://exam-service:4100/internal/stream-auth
+      MTX_AUTHHTTPEXCLUDE: >-
+        [{"action":"api"},{"action":"metrics"},{"action":"pprof"}]
+      MTX_API: "no"
+      MTX_METRICS: "no"
+      MTX_PPROF: "no"
+      MTX_LOGLEVEL: info
+    volumes:
+      - /etc/ssl/cloudflare:/certs:ro
+    healthcheck:
+      test: ["CMD", "wget", "--no-check-certificate", "-qO-", "https://127.0.0.1:8888/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - platform-net
+
+networks:
+  platform-net:
+    external: true
+    name: mts241alikhlash-net
