@@ -100,7 +100,7 @@ services:
 
   assessment-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/assessment-web@sha256:6ad3e648d549a50a981c0015d39bd7fb83591215890eb008499ede0fa8c189a3
+    image: ghcr.io/mts241alikhlash/assessment-web@sha256:eb3fae04e89a26bfcc12629cb21824c916a926e9ea99c15c7b876833f52fe5e6
 
   hr-web:
     <<: *web-defaults
