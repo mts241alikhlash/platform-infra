@@ -100,7 +100,7 @@ services:
 
   assessment-web:
     <<: *web-defaults
-    image: ghcr.io/mts241alikhlash/assessment-web@sha256:c38603c967f70828ce9e7a2e0ec9012742a4e75a9a99a62cc66871b6b2b8e16d
+    image: ghcr.io/mts241alikhlash/assessment-web@sha256:6ad3e648d549a50a981c0015d39bd7fb83591215890eb008499ede0fa8c189a3
 
   hr-web:
     <<: *web-defaults
@@ -120,7 +120,7 @@ services:
 
   identity-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:6a860f53d75d1f91bb4b4a15fa7932aa530ad3e7ea07b7a0e7280a329fc63e29
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:42d3147317ee2ff4651b0855a5ca414420ee7876061d3709b44c22e03105947e
     env_file:
       - path: env/identity-service.env
         required: false
@@ -135,7 +135,7 @@ services:
 
   academic-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/academic-service@sha256:2edf5c14fcb6b6422b68eeca9775e7c070c841c1d1e3fe345d018a38a6b66249
+    image: ghcr.io/mts241alikhlash/academic-service@sha256:90640fa607abbd90108d448a2419f8d13e18310198721d3581d708fdbd7bd433
     env_file:
       - path: env/academic-service.env
         required: false
@@ -150,7 +150,7 @@ services:
 
   inventory-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/inventory-service@sha256:ef9a7cf6095963929e1cc3ee2f07c27333907a4416eab571806f4336e29d0250
+    image: ghcr.io/mts241alikhlash/inventory-service@sha256:f166960ffd64e377ee87f759600d681e8dfe7c6f6d5940f61ad83e6718237560
     env_file:
       - path: env/inventory-service.env
         required: false
@@ -165,7 +165,7 @@ services:
 
   presence-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/presence-service@sha256:f7a870a6868be653440c654e4af0c73379e939a28bb2eeed404a575678ecc71f
+    image: ghcr.io/mts241alikhlash/presence-service@sha256:e1ddfa564d87d1a42d48a382aad67277214ef61687d76eb714952410da925456
     env_file:
       - path: env/presence-service.env
         required: false
@@ -180,7 +180,7 @@ services:
 
   portal-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/portal-service@sha256:ab9f8092fa4ce5dffd2df5a1403360a46922aa4e7734a1bab46566b0149ff305
+    image: ghcr.io/mts241alikhlash/portal-service@sha256:5a4845a446cc59c76c9e8d5f032b99dd2df29872c23b1c880bc8fc2b30b8ca1e
     env_file:
       - path: env/portal-service.env
         required: false
@@ -195,7 +195,7 @@ services:
 
   admission-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/admission-service@sha256:10e56756c627a07798f639bc3047e2371b71bde18b30c3050376166d60760b26
+    image: ghcr.io/mts241alikhlash/admission-service@sha256:c63ac220ca1bddc36015d9a5d7884a0a38f9457e4604da484eb29ea829eb1176
     env_file:
       - path: env/admission-service.env
         required: false
@@ -210,7 +210,7 @@ services:
 
   hr-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/hr-service@sha256:c33d5e1ae7e60483781f9cdec6e09a797a30af45ae9649e2bf1d8a6eb0c12ffc
+    image: ghcr.io/mts241alikhlash/hr-service@sha256:9d7769e290635c61f206cfee2fd7e2614d7e1646ad8a9e031361ec391fa5b032
     env_file:
       - path: env/hr-service.env
         required: false
@@ -225,7 +225,7 @@ services:
 
   student-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/student-service@sha256:07d571028307626669f8741e1d22aa3ec20068dcefdd3113f4190e81ccdefb5c
+    image: ghcr.io/mts241alikhlash/student-service@sha256:62947f497c8f4852e6a549126ec803353c4cba7c14b1f28d7987cad13381da1b
     env_file:
       - path: env/student-service.env
         required: false
@@ -240,7 +240,7 @@ services:
 
   assessment-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/assessment-service@sha256:2a2c3e7ef0b36b28dbced0bb16ebc0a9d1f0a0f0db2e6831205f9bda2d701702
+    image: ghcr.io/mts241alikhlash/assessment-service@sha256:a736a7ed7b3a86d0f80acd86edbaba9aa139f29c763ab0662fb5baf2de6a195f
     env_file:
       - path: env/assessment-service.env
         required: false
@@ -255,7 +255,7 @@ services:
 
   exam-service:
     <<: *service-defaults
-    image: ghcr.io/mts241alikhlash/exam-service@sha256:c28c5d6571e902c413ee13c71de4f628917ee3f0ae03544195e9dcb5678a4ba6
+    image: ghcr.io/mts241alikhlash/exam-service@sha256:0e888bda8aff2a5b2a515d4f8972e3b8d54a0ca2db095664f00fe97433b857c8
     env_file:
       - path: env/exam-service.env
         required: false
@@ -270,7 +270,7 @@ services:
 
   identity-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/identity-service@sha256:6a860f53d75d1f91bb4b4a15fa7932aa530ad3e7ea07b7a0e7280a329fc63e29
+    image: ghcr.io/mts241alikhlash/identity-service@sha256:42d3147317ee2ff4651b0855a5ca414420ee7876061d3709b44c22e03105947e
     profiles: ["migrate"]
     env_file:
       - path: env/identity-service.env
@@ -278,7 +278,7 @@ services:
 
   academic-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/academic-service@sha256:2edf5c14fcb6b6422b68eeca9775e7c070c841c1d1e3fe345d018a38a6b66249
+    image: ghcr.io/mts241alikhlash/academic-service@sha256:90640fa607abbd90108d448a2419f8d13e18310198721d3581d708fdbd7bd433
     profiles: ["migrate"]
     env_file:
       - path: env/academic-service.env
@@ -286,7 +286,7 @@ services:
 
   inventory-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/inventory-service@sha256:ef9a7cf6095963929e1cc3ee2f07c27333907a4416eab571806f4336e29d0250
+    image: ghcr.io/mts241alikhlash/inventory-service@sha256:f166960ffd64e377ee87f759600d681e8dfe7c6f6d5940f61ad83e6718237560
     profiles: ["migrate"]
     env_file:
       - path: env/inventory-service.env
@@ -294,7 +294,7 @@ services:
 
   presence-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/presence-service@sha256:f7a870a6868be653440c654e4af0c73379e939a28bb2eeed404a575678ecc71f
+    image: ghcr.io/mts241alikhlash/presence-service@sha256:e1ddfa564d87d1a42d48a382aad67277214ef61687d76eb714952410da925456
     profiles: ["migrate"]
     env_file:
       - path: env/presence-service.env
@@ -302,7 +302,7 @@ services:
 
   portal-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/portal-service@sha256:ab9f8092fa4ce5dffd2df5a1403360a46922aa4e7734a1bab46566b0149ff305
+    image: ghcr.io/mts241alikhlash/portal-service@sha256:5a4845a446cc59c76c9e8d5f032b99dd2df29872c23b1c880bc8fc2b30b8ca1e
     profiles: ["migrate"]
     env_file:
       - path: env/portal-service.env
@@ -310,7 +310,7 @@ services:
 
   admission-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/admission-service@sha256:10e56756c627a07798f639bc3047e2371b71bde18b30c3050376166d60760b26
+    image: ghcr.io/mts241alikhlash/admission-service@sha256:c63ac220ca1bddc36015d9a5d7884a0a38f9457e4604da484eb29ea829eb1176
     profiles: ["migrate"]
     env_file:
       - path: env/admission-service.env
@@ -318,7 +318,7 @@ services:
 
   hr-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/hr-service@sha256:c33d5e1ae7e60483781f9cdec6e09a797a30af45ae9649e2bf1d8a6eb0c12ffc
+    image: ghcr.io/mts241alikhlash/hr-service@sha256:9d7769e290635c61f206cfee2fd7e2614d7e1646ad8a9e031361ec391fa5b032
     profiles: ["migrate"]
     env_file:
       - path: env/hr-service.env
@@ -326,7 +326,7 @@ services:
 
   student-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/student-service@sha256:07d571028307626669f8741e1d22aa3ec20068dcefdd3113f4190e81ccdefb5c
+    image: ghcr.io/mts241alikhlash/student-service@sha256:62947f497c8f4852e6a549126ec803353c4cba7c14b1f28d7987cad13381da1b
     profiles: ["migrate"]
     env_file:
       - path: env/student-service.env
@@ -334,7 +334,7 @@ services:
 
   assessment-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/assessment-service@sha256:2a2c3e7ef0b36b28dbced0bb16ebc0a9d1f0a0f0db2e6831205f9bda2d701702
+    image: ghcr.io/mts241alikhlash/assessment-service@sha256:a736a7ed7b3a86d0f80acd86edbaba9aa139f29c763ab0662fb5baf2de6a195f
     profiles: ["migrate"]
     env_file:
       - path: env/assessment-service.env
@@ -342,7 +342,7 @@ services:
 
   exam-service-migrate:
     <<: *migrate-defaults
-    image: ghcr.io/mts241alikhlash/exam-service@sha256:c28c5d6571e902c413ee13c71de4f628917ee3f0ae03544195e9dcb5678a4ba6
+    image: ghcr.io/mts241alikhlash/exam-service@sha256:0e888bda8aff2a5b2a515d4f8972e3b8d54a0ca2db095664f00fe97433b857c8
     profiles: ["migrate"]
     env_file:
       - path: env/exam-service.env
