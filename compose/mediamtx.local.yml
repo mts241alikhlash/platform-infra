@@ -1,0 +1,50 @@
+# Local MediaMTX for the camera trial on a phone over adb.
+# No TLS here: the debug APK allows cleartext and the phone talks to the host
+# over the LAN. Production uses the TLS compose file instead.
+
+logLevel: debug
+logDestinations: [stdout]
+
+api: no
+metrics: no
+pprof: no
+playback: no
+
+rtsp: no
+srt: no
+webrtc: yes
+webrtcAddress: :8889
+webrtcEncryption: no
+webrtcAllowOrigins: ["*"]
+webrtcLocalUDPAddress: :8189
+
+# Plain RTMP for the local trial; production publishes RTMPS.
+rtmp: yes
+rtmpAddress: :1935
+rtmpEncryption: "no"
+
+hls: yes
+hlsAddress: :8888
+hlsAllowOrigins: ["*"]
+hlsAlwaysRemux: yes
+hlsVariant: lowLatency
+hlsSegmentDuration: 1s
+hlsSegmentCount: 7
+hlsEncryption: no
+
+authMethod: http
+# 4102 is the build that carries the stream endpoints.
+authHTTPAddress: http://127.0.0.1:4102/internal/stream-auth
+authHTTPExclude:
+  - action: api
+  - action: metrics
+  - action: pprof
+  # Local trial: playback is open on the LAN so the supervisor grid works without
+  # a per-segment token. The production compose keeps read behind the hook.
+  - action: read
+
+pathDefaults:
+  record: no
+
+paths:
+  all_others:
