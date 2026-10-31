@@ -9,7 +9,7 @@ about 12 Mbps sustained through one host in both directions.
 
 | Port | Protocol | Who | Why |
 | --- | --- | --- | --- |
-| 8889 | HTTP/WHIP | the exam app | publishes the camera; TLS is terminated by the reverse proxy in front |
+| 8889 | HTTP/WHIP | the exam app | publishes the camera; plain HTTP, the host is DNS-only in Cloudflare |
 | 8189 | ICE/UDP | the exam app | WebRTC media path |
 | 8888 | HTTPS/HLS | supervisor page | plays in a `<video>` tag; TLS terminated by MediaMTX itself |
 
@@ -21,6 +21,25 @@ and Room 2.8.5 — all of that is already in `libs.versions.toml`.
 
 The app publishes 1280×720 at 24 fps, ~1.5 Mbps per student. Thirty students is
 about 45 Mbps upstream; check the school's link before a full class.
+
+## ICE candidates
+
+`MTX_WEBRTCADDITIONALHOSTS`, `MTX_WEBRTCNAT1TO1` and
+`MTX_WEBRTCIPSFROMINTERFACES: "no"` are not optional. Without them MediaMTX
+advertises `127.0.0.1` and the container's private address as ICE candidates,
+the phone tries the first one, and the session ends with `deadline exceeded
+while waiting connection` even though WHIP answered 201. The symptom is a
+supervisor grid that spins forever while the seat still looks alive.
+
+MediaMTX environment names are upper case throughout. `MTX_WEBRTCIPsFromInterfaces`
+is silently ignored; only `MTX_WEBRTCIPSFROMINTERFACES` takes effect.
+
+## Firewall
+
+The media host needs 8189/udp, 8888/tcp and 8889/tcp open to the internet. The
+UFW policy on the API VPS only allows 80/443 from Cloudflare ranges, so the
+media host cannot be reached through the gateway: it is DNS-only in Cloudflare
+and clients connect to these ports directly.
 
 ## Authentication
 

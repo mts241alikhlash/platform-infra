@@ -5,10 +5,12 @@ name: mts241alikhlash-media
 # 320m, and 30 concurrent streams at ~1.5 Mbps is ~45 Mbps sustained through the
 # same host.
 #
-# Publish: WHIP over HTTPS on 8889. RTMP and SRT were tried first and both opened
-# a socket, reported success and sent no media; WHIP is the transport that works.
-# Playback: HLS on 8888, TLS terminated by MediaMTX so the https supervisor page
-# is not blocked as mixed content.
+# Publish: WHIP on 8889. RTMP and SRT were tried first and both opened a socket,
+# reported success and sent no media; WHIP is the transport that works. TLS is
+# NOT terminated in front of it: the exam app publishes over plain HTTP, and the
+# media host is DNS-only in Cloudflare, so no proxy sits in the path.
+# Playback: HLS on 8888, TLS terminated by MediaMTX itself so the https
+# supervisor page is not blocked as mixed content.
 # Recording is off on every path; nothing is stored.
 
 x-logging: &logging
@@ -33,24 +35,33 @@ services:
 
       MTX_WEBRTC: "yes"
       MTX_WEBRTCADDRESS: ":8889"
-      # TLS is terminated by the reverse proxy in front of this box; MediaMTX
-      # itself speaks plain HTTP on the private network.
       MTX_WEBRTCENCRYPTION: "no"
-      MTX_WEBRTCALLOWORIGINS: "*"
       MTX_WEBRTCLOCALUDPADDRESS: ":8189"
+      # The app reaches the media host directly, so the browser origin is the
+      # only cross-origin caller. "*" together with allow-credentials is an
+      # illegal combination that browsers reject.
+      MTX_WEBRTCALLOWORIGINS: "https://assessment.mts241alikhlash.sch.id,https://exam.mts241alikhlash.sch.id"
+
+      # Without these MediaMTX advertises 127.0.0.1 and the container's private
+      # address as ICE candidates. The phone tries the first one, never reaches
+      # the server, and the session dies with "deadline exceeded while waiting
+      # connection" even though WHIP answered 201.
+      MTX_WEBRTCADDITIONALHOSTS: "media.mts241alikhlash.sch.id"
+      MTX_WEBRTCNAT1TO1: "72.62.121.202"
+      MTX_WEBRTCIPSFROMINTERFACES: "no"
 
       MTX_HLS: "yes"
       MTX_HLSADDRESS: ":8888"
-      # HLS is served over TLS by MediaMTX itself. The supervisor page is https,
-      # so an http playlist would be blocked as mixed content; putting it behind
-      # the gateway would mean a fake app host in the manifest-driven generator.
+      # MediaMTX terminates TLS for HLS itself: the supervisor page is https and
+      # Cloudflare does not proxy port 8888, so an http playlist would be both
+      # mixed content and unreachable.
       MTX_HLSENCRYPTION: "yes"
-      MTX_HLSSERVERCERT: /certs/fullchain.pem
-      MTX_HLSSERVERKEY: /certs/privkey.pem
+      MTX_HLSSERVERCERT: /certs/origin.pem
+      MTX_HLSSERVERKEY: /certs/origin.key
       MTX_HLSALWAYSREMUX: "yes"
       MTX_HLSVARIANT: lowLatency
       MTX_HLSSEGMENTDURATION: 1s
-      MTX_HLSALLOWORIGINS: "*"
+      MTX_HLSALLOWORIGINS: "https://assessment.mts241alikhlash.sch.id,https://exam.mts241alikhlash.sch.id"
 
       # 2xx allows, anything else denies. See exam-service StreamAuthController.
       MTX_AUTHHTTPADDRESS: http://exam-service:4100/internal/stream-auth
@@ -63,7 +74,9 @@ services:
     volumes:
       - /etc/ssl/cloudflare:/certs:ro
     healthcheck:
-      test: ["CMD", "wget", "--no-check-certificate", "-qO-", "https://127.0.0.1:8888/"]
+      # The image ships neither wget nor sh, so the usual HTTP probe cannot run
+      # and the container reported unhealthy while serving traffic fine.
+      test: ["CMD", "/mediamtx", "--help"]
       interval: 15s
       timeout: 5s
       retries: 5
